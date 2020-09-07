@@ -1,0 +1,102 @@
+---
+title: "Assignment 3"
+author: "Kaitlyn Fales"
+date: "9/2/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+-------
+
+Problems
+-------
+ \
+
+1. Use `read.csv` to import the Covid19 data from WHO: [link](https://covid19.who.int/table)
+```{r}
+WHOdf <- read.csv("WHO-COVID-19-global-data.csv", header = TRUE)
+```
+
+2. How many columns and rows the data have? How many categorical variables the data have?
+```{r}
+str(WHOdf)
+```
+```{r}
+dim(WHOdf)
+```
+
+3. How many missing values are there?  Show the missing values by columns.  What variable has the most number of missing values?
+```{r}
+sum(is.na(WHOdf))
+```
+```{r}
+colSums(is.na(WHOdf))
+```
+
+4. Correct the types of the variables that are mismatched type.
+```{r}
+class(WHOdf$ï..Date_reported)
+library(lubridate)
+WHOdf$ï..Date_reported <- mdy(WHOdf$ï..Date_reported)
+class(WHOdf$ï..Date_reported)
+```
+
+5. Find the daily average number of cases globally.
+```{r}
+daily_new_cases <- mean(WHOdf$New_cases)
+daily_new_cases
+```
+```{r}
+daily_cumulative_cases <- mean(WHOdf$Cumulative_cases)
+daily_cumulative_cases
+```
+
+6. Find the maximum cases a day.  
+```{r}
+max_cases <- max(WHOdf$New_cases)
+max_cases
+```
+
+7. Which country at which date has the maximum number of cases a day? *Hint:  use the `which.max` function to find the index of the row that contains the maximum number of cases. Then from the row index, find that country and the date. * 
+```{r}
+which_max <- which.max(WHOdf$New_cases)
+which_max
+```
+```{r}
+WHOdf[16888,1:3]
+```
+
+8.  How many WHO's region there are in the data?
+```{r}
+table(WHOdf$WHO_region)
+# There are 7 regions
+```
+
+9.  Find the daily average cases in EUROPE. Find the daily average cases by regions.
+```{r}
+WHOdf_Europe <- WHOdf[WHOdf$WHO_region == 'EURO',]
+average_Europe <- mean(WHOdf_Europe$New_cases)
+average_Europe
+```
+```{r}
+by(WHOdf$New_cases, WHOdf$WHO_region, mean)
+```
+
+10. Find the daily average number of cases in the US in the last 5 days. 
+```{r}
+WHOdf_US <- WHOdf[(WHOdf$Country=='United States of America')&(Sys.Date()-WHOdf$ï..Date_reported<10),]
+mean(WHOdf_US$New_cases)
+# Changed the number from 5 to 10 to account for the five days in between the system date and the last reported date, so we are actually going back 10 days to get the last five rows of dates
+```
+
+11. Which day of the week has the most number of cases in South East Asia (SEARO region)?
+```{r}
+WHOdf$weekday <- wday(WHOdf$ï..Date_reported)
+WHOdf_SEARO <- WHOdf[(WHOdf$WHO_region=='SEARO'),]
+by(WHOdf_SEARO$New_cases,WHOdf_SEARO$weekday,sum)
+# Day 1, or Monday has the most number of cases in the SEARO region
+```
+
