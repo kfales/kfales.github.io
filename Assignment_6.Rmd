@@ -1,0 +1,128 @@
+---
+title: "Assignment 6"
+author: "Kaitlyn Fales"
+date: "9/21/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+```
+
+-------
+
+**Questions**
+
+Use the data of your own.  Produce the following types of plots and comment on each plot. Plots should be meaningful. If you use the data we used in class, make sure the plots are not the same as the ones in the slides. 
+
+```{r}
+# Bringing in and preparing the data from Assignment 5
+library(tidyverse)
+df <- read_csv('titanic.csv')
+df$Cabin <- NULL
+df$Age <- replace_na(df$Age, mean(df$Age, na.rm = TRUE))
+table(df$Embarked)
+df$Embarked <- replace_na(df$Embarked, 'S')
+```
+
+-------
+
+1. For one continuous variable:
+
+- Density
+```{r}
+ggplot(df) + geom_density(mapping = aes(x = Age))
+# This plot shows that the concentration of Age is at about 30 years old
+```
+
+- Histogram 
+```{r}
+ggplot(df) + geom_histogram(mapping = aes(x = Fare))
+# The fare for the tickets does not have a very wide range, with the exception of a few outliers. The majority of people paid less than $100 (or whatever currency this is in), which makes sense for the time that the Titanic voyage happened. 
+```
+
+- Boxplot
+```{r}
+df %>% 
+  filter(Age < 50) %>% 
+  ggplot() + geom_boxplot(mapping = aes(y = Age))
+# This plot also shows the concentration of Age around 30 years old. Generally, the people on the Titanic were very young based on the data.
+```
+
+-------
+
+2. For one categorical variable
+
+- Barplot
+```{r}
+df %>% 
+  ggplot() + geom_bar(mapping = aes(x = Embarked))
+# This plot shows the amount of people that embarked on the Titanic from each place. The vast majority of people embarked from Southampton.
+```
+
+-------
+
+3. For two continuous variables
+
+- Scatter Plot
+```{r}
+df %>% 
+  filter(Fare < 300) %>% 
+  ggplot() + geom_point(mapping = aes(x = Age, y = Fare, color = factor(Pclass)))
+# This scatterplot maps a person's age versus their ticket fare. It is also color coded by the class of the passenger. This plot confirms that the 1st class fare cost more money than the 2nd or 3rd class fare, and also shows that generally, younger people purchased lower class tickets. 
+```
+
+- Line Plot
+```{r}
+df %>% 
+  filter(Age > 30) %>% 
+  filter(Age < 50) %>% 
+  group_by(Age,Sex) %>% 
+  summarise(mean = mean(Survived)) %>% 
+  ggplot() + geom_line(aes(x=Age,y=mean,color=Sex))
+# This plot shows the mean chance of survival for the ages between 30 and 50, and also color codes by sex. This plot shows that women had a much higher chance of surviving overall no matter what age (with the exception of one outlier).
+```
+
+- Smooth Plot
+```{r}
+df %>% 
+  filter(Sex == "male") %>% 
+  group_by(Age) %>% 
+  summarise(mean = mean(Survived)) %>% 
+  ggplot() + geom_smooth(aes(x=Age,y=mean))
+# This plot shows that the chance of survival for men was highest when they were under 20 or over 60, which makes sense given the evacuation rules on the Titanic.
+```
+
+-------
+
+4. For one continuous + one categorical variables
+
+- Density
+```{r}
+df %>% 
+  ggplot() + geom_density(mapping = aes(x = Age, color = factor(Pclass)))
+# This plot shows that the concentration of people aboard were not only young, but also mostly having a third class ticket. The people in first class came from a wider age group than those in second and third class.
+```
+
+- BoxPlot
+```{r}
+df %>% 
+  filter(Fare < 200) %>% 
+  group_by(Embarked) %>% 
+  ggplot() + geom_boxplot(aes(x = Fare,y=Embarked))
+# The fares were generally higher when the passenger was embarking from Cherbourg.
+```
+
+-------
+
+5. For two categorical variables: barplot
+```{r}
+df %>% 
+  group_by(Sex,Embarked) %>% 
+  summarise(mean = mean(Survived)) %>% 
+  ggplot() + geom_col(aes(x=Sex,y=mean,fill=Embarked))
+# This plot shows that women had a much greater chance of survival compared to men.Females came equally from each place where they embarked, whereas men were more concentrated in Cherbourg and Southampton.
+```
+
+
+
