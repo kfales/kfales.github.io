@@ -1,0 +1,140 @@
+---
+title: "Assignment_7"
+author: "Kaitlyn Fales"
+date: "9/23/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+```
+
+-------
+
+**Questions**
+
+Use the data of your own.  Produce the following types of plots and comment on each plot. Plots should be meaningful. If you use the data we used in class, make sure the plots are not the same as the ones in the slides. All plots should have title, caption, appropriate labels on x and y-axis. 
+
+-------
+```{r}
+# Importing data and some cleaning
+library(tidyverse)
+df <- read_csv("COVID-19 data.csv")
+df$Country_code <- NULL
+df <- df %>% 
+  rename(date = Date_reported)
+library(lubridate)
+df$date <- mdy(df$date)
+class(df$date)
+df$weekday <- wday(df$date)
+df$month <- month(df$date)
+df$monthday <- mday(df$date)
+df$month2 <- case_when(
+  df$monthday <=10 ~ 'early_month',
+  df$monthday <=20 ~ 'mid_month',
+  TRUE ~ 'end_month'
+)
+df$weekday2 <- case_when(
+  df$weekday <=5 ~ "weekday",
+  TRUE ~ "weekend"
+)
+```
+
+1. Make a plot using `face_wrap` by one categorical variable (`face_wrap(~variable1)`)
+```{r}
+df %>% 
+  filter(WHO_region == "AMRO"|WHO_region == "EURO") %>%
+  ggplot(mapping = aes(x=New_cases,y=New_deaths)) + geom_point() + 
+  facet_wrap(~WHO_region) + labs(title = "Deaths vs Cases between Europe and the
+  Americas", caption = "The Americas have many more cases than Europe does.",
+  x = "New Cases", y = "New Deaths")
+  
+```
+
+2. Make a plot using `face_wrap` by two categorical variables (`face_wrap(variable1~variable2)`)
+```{r}
+df %>%
+  filter(month == 3|month == 4) %>%
+  ggplot(aes(x=New_cases,y=New_deaths)) + geom_smooth() +
+  facet_wrap(month~month2) + labs(title = "March vs. April Cases and Deaths by Time of Month",
+  caption = "There are fewer cases and deaths for March, but you can see cases and deaths climbing in April.",x = "New Cases",y = "New Deaths")
+```
+
+
+3. Make a plot using `position ='jitter'`. 
+```{r}
+df %>% 
+  filter(Country == "United States of America") %>%
+  ggplot() + geom_point(aes(x = New_cases,y = New_deaths,color = month2),position = "jitter") +
+  labs(title = "US Cases Throughout the Month",caption = "Cases and deaths are evenly dispersed
+  throughout the month.",x="New Cases",y="New Deaths",color = "Time of the Month")
+```
+
+4. Make a plot using `position ='dodge'`.
+```{r}
+df %>% 
+  group_by(WHO_region) %>% 
+  ggplot() + geom_bar(aes(x=WHO_region,fill=month2),position = 'dodge') +
+  labs(title = "Count of data points for each WHO region",caption = "The most amount
+  of data is available for the EURO and AMRO regions, and equal amounts of data within
+  each category is available for the time of the month.",x="Region",y="Data count",
+  fill = "Time of the Month")
+```
+
+5. Make a plot using `position ='fill'`. 
+```{r}
+df %>% 
+  group_by(WHO_region) %>% 
+  ggplot() + geom_bar(aes(x=WHO_region,fill=weekday2),position = 'fill') +
+  labs(title = "Count of data points for each WHO region",caption = "Equal amounts of data  
+  within each region is available for weekdays versus weekends.",x="Region",y="Data count",
+  fill = "Day Type")
+```
+
+6. Make a plot using `geom_col`.
+```{r}
+df %>% 
+  filter(Country == "United States of America") %>% 
+  group_by(month,month2) %>% 
+  summarise(sum = sum(New_cases)) %>% 
+  ggplot() + geom_col(aes(x=month,y=sum,fill=month2)) +
+  labs(title = "New US Cases by Month",caption = "The height of new cases in the US was
+  in June/July but is now slowly tapering off, and most cases happen in the middle or 
+  end of the month as opposed to the beginning.",x="Month",y="Sum of New Cases",
+  fill = "Time of the Month")
+```
+
+7. Change the theme of one of your plots. 
+```{r}
+df %>% 
+  filter(Country == "United States of America") %>% 
+  group_by(month,month2) %>% 
+  summarise(sum = sum(New_cases)) %>% 
+  ggplot() + geom_col(aes(x=month,y=sum,fill=month2)) +
+  labs(title = "New US Cases by Month",caption = "The height of new cases in the US was
+  in June/July but is now slowly tapering off, and most cases happen in the middle or 
+  end of the month as opposed to the beginning.",x="Month",y="Sum of New Cases",
+  fill = "Time of the Month") + theme_dark()
+```
+
+8. Save a plot and put a link of the plot to your Github Webpage.  To link a plot `abc.png` you just need to insert the following on the README.md
+
+```{r, eval=FALSE}
+[Link to the plot](abc.png)
+```
+
+```{r}
+df %>% 
+  filter(Country == "United States of America") %>% 
+  group_by(month,month2) %>% 
+  summarise(sum = sum(New_cases)) %>% 
+  ggplot() + geom_col(aes(x=month,y=sum,fill=month2)) +
+  labs(title = "New US Cases by Month",caption = "The height of new cases in the US was
+  in June/July but is now slowly tapering off, and most cases happen in the middle or 
+  end of the month as opposed to the beginning.",x="Month",y="Sum of New Cases",
+  fill = "Time of the Month") + ggsave("plot.png") + ggsave("plot.pdf")
+```
+
+
+
+
