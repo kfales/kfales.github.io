@@ -1,0 +1,68 @@
+
+---
+title: "Assignment 9"
+author: "Kaitlyn Fales"
+date: "10/5/2020"
+output: html_document
+---
+
+
+***Submission***: Submit the link on Github of the assignment to Blackboard.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+```
+
+
+-------
+
+1. Use the dataset by of covid 19 by WHO at https://covid19.who.int/WHO-COVID-19-global-data.csv. Find the three countries with the most numbers of deaths by Covid-19. 
+
+Hint: 
+
+-  Use `filter` to select the most current date 
+
+-  Pipe with `arrange(-Cumulative_deaths)` to rank the data by the number of cumulative deaths
+
+```{r}
+library(tidyverse)
+df <- read_csv('https://covid19.who.int/WHO-COVID-19-global-data.csv')
+df1 <- df %>% 
+  filter(Date_reported == "2020-10-5") %>% 
+  arrange(-Cumulative_deaths)
+# The three countries with the highest cumulative deaths are the US, Brazil, and India.
+```
+
+
+2. Make a plot revealing the number of deaths in the three countries with the most numbers of deaths
+```{r}
+library(gganimate)
+df %>% 
+  filter(Country %in% c("United States of America","Brazil","India")) %>% 
+  ggplot(aes(x=Date_reported,y=New_deaths,color=Country)) + geom_line() +
+  geom_point(size = 3) + transition_reveal(Date_reported) + 
+  labs(x="Date",y="Deaths",title="Deaths over Time")
+```
+
+3. Create the new variable (column) `death_per_cases` recording the number of deaths per cases (Hint: divide cumulative deaths by cumulative cases).  What are the three countries with the highest deaths per cases? 
+```{r}
+df2 <- df %>% 
+  filter(Date_reported == "2020-10-5") %>% 
+  mutate(death_per_cases = Cumulative_deaths/Cumulative_cases) %>% 
+  arrange(-death_per_cases)
+# The three countries with the highest death_per_cases as of 10-5-2020 are Yemen, Italy, and Mexico.
+```
+
+
+4. Make a plot revealing the number of deaths per cases of the US, Italy and Mexico.
+```{r,warning=FALSE,message=FALSE}
+df %>% 
+  filter(Country %in% c("United States of America","Italy","Mexico")) %>% 
+  mutate(death_per_cases = Cumulative_deaths/Cumulative_cases) %>%
+  ggplot(aes(x=Date_reported,y=death_per_cases,color=Country)) + geom_line() +
+  geom_point(size=3) + transition_reveal(Date_reported) +
+  labs(x="Date",y="Deaths per Cases",title="Deaths per Cases over Time")
+```
+
+
+
