@@ -1,0 +1,145 @@
+
+---
+title: "Assignment 10"
+author: "Kaitlyn Fales"
+date: "10/5/2020"
+output: html_document
+---
+
+
+***Submission***: Submit the link on Github of the assignment to Blackboard.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+```
+
+
+-------
+
+1. Install the package `mlbench` and use the follows to import the data
+
+```{r}
+library(mlbench)
+library(tidyverse)
+data(PimaIndiansDiabetes)
+df <- PimaIndiansDiabetes
+df <- df %>% 
+  rename(target = diabetes)
+sum(is.na(df))
+```
+
+- Set seed to be 2020. 
+```{r}
+library(caret)
+set.seed(2020)
+```
+
+- Partition the data into 80% training and 20% testing.  
+```{r}
+splitIndex <- createDataPartition(df$target, p = .80, 
+                                  list = FALSE)
+df_train <- df[ splitIndex,]
+df_test <- df[-splitIndex,]
+```
+
+-------
+
+2. Practice Decision Tree.  Do the follows:
+
+  - Use `rpart` package, create a decision tree with maximum depth of 3. 
+```{r}
+library(rpart)
+tree_model <- rpart(target ~ ., data = df_train,
+                 control = rpart.control(maxdepth = 3))
+```
+  
+  - Calculate the accuracy of the model on the testing data. 
+```{r}
+pred <- predict(tree_model, df_test, type = "class")
+cm <- confusionMatrix(data = pred,reference = df_test$target,positive =   "pos")
+cm$overall[1]
+```
+  
+  - Plot the tree
+```{r}
+library(rattle)
+fancyRpartPlot(tree_model)
+```
+  
+  - Plot the variable importance by the tree
+```{r}
+barplot(tree_model$variable.importance)
+```
+
+-------
+
+3. Practice Random Forest.  Do the follows: 
+
+  - Use `randomForest` package, create a random forest of 1000 trees. 
+```{r}
+library(randomForest)
+forest_model <-  randomForest(target ~ ., data=df_train, ntree = 1000)
+```
+  
+  - Calculate the accuracy of the model on the testing data. 
+```{r}
+pred_forest <- predict(forest_model, df_test, type = "class")
+cm_forest <- confusionMatrix(data = pred_forest, reference = df_test$target, positive = "pos")
+cm_forest$overall[1]
+```
+  
+  - Plot the variable importance by the forest
+```{r}
+importance(forest_model)
+varImpPlot(forest_model)
+```
+
+-------
+
+4. Compare the accuracy of a forest of 1000 trees and a forest of 2000 trees. 
+```{r}
+# 1000 trees
+cm_forest$overall[1]
+
+# 2000 trees
+forest_model1 <-  randomForest(target ~ ., data=df_train, ntree = 2000)
+pred_forest1 <- predict(forest_model1, df_test, type = "class")
+cm_forest1 <- confusionMatrix(data = pred_forest1, reference = df_test$target, positive = "pos")
+cm_forest1$overall[1]
+
+# The accuracy of the random forest with 1000 trees is higher than the model with 2000 trees.
+```
+
+-------
+
+5. Using Caret, create a tree with maximum depth of 3 and forest of 1000 trees. Compare the accuracy of these two models.
+```{r}
+# Tree with Max Depth of 3
+model1 <- train(target~., data=df_train, 
+                method = "rpart2",
+                maxdepth=3)
+pred_model1 <- predict(model1, df_test)
+cm_model1 <- confusionMatrix(data = pred_model1, reference = df_test$target, positive = "pos")
+cm_model1$overall[1]
+
+# Random Forest of 1000 trees
+model2 <- train(target~., data=df_train, 
+                method = "rf",
+                ntree=1000)
+pred_model2 <- predict(model2, df_test)
+cm_model2 <- confusionMatrix(data = pred_model2, reference = df_test$target, positive = "pos")
+cm_model2$overall[1]
+
+# Random forest is more accurate than the decision tree.
+```
+
+-------
+
+6. Plot variable importance by the two models in 5.
+```{r}
+plot(varImp(model1))
+```
+```{r}
+plot(varImp(model2))
+```
+
