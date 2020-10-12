@@ -1,0 +1,113 @@
+
+---
+title: "Assignment 12"
+author: "Kaitlyn Fales"
+date: "10/12/2020"
+output: html_document
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+```
+
+
+-------
+
+1. Install the package `mlbench` and use the follows to import the data
+
+```{r}
+library(mlbench)
+library(tidyverse)
+data(PimaIndiansDiabetes)
+df <- PimaIndiansDiabetes
+df <- df %>% 
+  rename(target = diabetes)
+```
+
+- Set seed to be 2020. 
+```{r}
+set.seed(2020)
+```
+
+- Partition the data into 80% training and 20% testing.  
+```{r}
+library(caret)
+splitIndex <- createDataPartition(df$target, p = .80, 
+                                  list = FALSE)
+df_train <- df[ splitIndex,]
+df_test <- df[-splitIndex,]
+```
+
+-------
+
+2. Use cross-validation of 30 folds to tune random forest (method='rf').  What is the `mtry` value that produces the greatest accuracy?
+```{r}
+tuneGrid <-  expand.grid(mtry = 2:4)
+trControl <-  trainControl(method = "cv",
+                         number = 30)
+forest_cv <- train(target~., data=df_train, 
+                                method = "rf", 
+                                trControl = trControl,
+                                tuneGrid = tuneGrid)
+plot(forest_cv)
+print(forest_cv)
+```
+ 
+
+-------
+
+3. Use cross-validation with of 30 folds to tune random forest (method='ranger').  What are the parameters that produce the greatest accuracy?
+```{r}
+library(ranger)
+tuneGrid1 <-  expand.grid(mtry = 2:4,
+                       splitrule = c('gini', 'extratrees'),
+                       min.node.size = c(1:10))
+trControl1 <-  trainControl(method = "cv",
+                            number = 30)
+forest_cv1 <- train(target~., data=df_train, 
+                                method = "ranger", 
+                                trControl = trControl1,
+                                tuneGrid = tuneGrid1)
+plot(forest_cv1)
+print(forest_cv1)
+```
+
+-------
+
+4. Go to https://topepo.github.io/caret/available-models.html and pick a classification model.  Tune the classification model using cross-validation of 30 folds. 
+```{r}
+library(caTools)
+tuneGrid2 <-  expand.grid(nIter = 2:5)
+trControl2 <-  trainControl(method = "cv",
+                            number = 30)
+boost_model <- train(target~., data=df_train, 
+                                method = "LogitBoost", 
+                                trControl = trControl2,
+                                tuneGrid = tuneGrid2)
+plot(boost_model)
+print(boost_model)
+```
+
+
+5. Compare the three models in question 2, 3, and 4 to select the final model.  Evaluate the accuracy of the final model on the test data. 
+
+The final model selected is the Boosted Logistic Regression model, since it has the highest accuracy in the comparison below.
+
+```{r}
+results <- resamples(list(forest = forest_cv,
+                          ranger = forest_cv1,
+                          boost = boost_model))
+bwplot(results)
+```
+
+```{r}
+pred <- predict(boost_model, df_test)
+
+cm <- confusionMatrix(data = pred, reference = df_test$target, positive = "pos")
+
+cm$overall[1]
+```
+Overall, it is a pretty accurate model on the testing data.
+
