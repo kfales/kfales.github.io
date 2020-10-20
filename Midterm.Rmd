@@ -1,0 +1,449 @@
+
+---
+title: "Midterm Project"
+author: "Kaitlyn Fales"
+date: "10/26/2020"
+output: html_document
+---
+
+-------
+
+## I. Data Wrangling
+
+1. Download the data file `hdd0318cy.sas7bdat`.  
+
+2. Use `read_sas` in library `haven` to read the data.
+```{r}
+library(haven)
+df <- read_sas('Midterm_Data.sas7bdat')
+```
+    
+3. Filter the data to have only patients of the year 2018 (`yod==2018`)
+```{r}
+library(tidyverse)
+summary(df$yod)
+df_cleaned <- df %>% 
+  filter(yod == "18")
+```
+
+    
+4. Select to work with only following variables: 
+
+```{r, eval=FALSE}
+                      "yod", "payfix","pay_ub92","age",  
+                      "sex","raceethn","provider","moa", 
+                      "yoa","mod","admtype", "asource" , 
+                      "preopday" ,"los", "service" , "icu","ccu",    
+                      "dispub92", "payer"  ,"drg","trandb", 
+                      "randbg","randbs","orr", "anes","seq",   
+                      "lab","dtest", "ther","blood","phar", 
+                      "other","patcon","bwght","total","tot" ,  
+                      "ecodub92","b_wt","pt_state","diag_adm","ancilar" ,
+                      "campus","er_fee","er_chrg","er_mode","obs_chrg",
+                      "obs_hour","psycchrg","nicu_day"
+```
+```{r}
+df_cleaned <- df_cleaned %>% 
+  select(yod,payfix,pay_ub92,age,sex,raceethn,provider,moa,yoa,mod,admtype,
+         asource,preopday,los,service,icu,ccu,dispub92,payer,drg,trandb,
+         randbg,randbs,orr,anes,seq,lab,dtest,ther,blood,phar,other,patcon,
+         bwght,total,tot,ecodub92,b_wt,pt_state,diag_adm,ancilar,campus,
+         er_fee,er_chrg,er_mode,obs_chrg,obs_hour,psycchrg,nicu_day)
+```
+ 
+
+5. What are variables that have missing values?
+```{r}
+colSums(is.na(df_cleaned))
+# payfix,preopday,obs_hour,nicu_day
+```
+ 
+6. Remove all variables with missing values
+```{r}
+df_cleaned <- df_cleaned %>% 
+  select(-payfix,-preopday,-obs_hour,-nicu_day)
+colSums(is.na(df_cleaned))
+```
+ 
+7. Refer to the data description in the file `HDD2015-18cy6-20-19.docx`, which variable recording the month of admission?, which variable recording the month of discharge?
+
+  - According to the document, the variable "moa" records the month of admission, and the variable "mod" records the month of discharge
+
+8. Which month admitted the most number of patients? Which month admitted the most number of male patients?
+```{r}
+df_cleaned %>% 
+  group_by(moa) %>% 
+  summarise(patients = n())
+# The tenth month, or October, admitted the most number of patients.
+```
+```{r}
+df_cleaned %>% 
+  filter(sex == 1) %>% 
+  group_by(moa) %>% 
+  summarise(patients = n())
+# The same month, October, admitted the most male patients. 
+```
+
+
+9. Which month has the most number of teenage female patients?
+```{r}
+df_cleaned %>% 
+  filter(sex == 2 & age %in% c(13:17)) %>% 
+  group_by(moa) %>% 
+  summarise(patients = n())
+# Month 3, or March, admitted the most number of teenage female patients.
+```
+
+10. Which provider has the most number of female patients in October? 
+```{r}
+df_cleaned %>% 
+  filter(sex == 2 & moa == 10) %>% 
+  group_by(provider) %>% 
+  summarise(patients = n())
+# Provider number 7205, Rhode Island Hospital, had the most number of female patients in October.
+```
+
+11. Is female patients older than male patients, on average? 
+```{r}
+df_cleaned %>% 
+  group_by(sex) %>% 
+  summarise(avg_age = mean(age))
+# Disregarding number 9 since there are missing values there, female patients are not older than male patients on average, they are younger by about a year.
+```
+
+12. Calculate the average age of patients by months. Which month has the oldest patients on average age?
+```{r}
+df_cleaned %>% 
+  group_by(moa) %>% 
+  summarise(avg_age = mean(age))
+# Based on the summary below, month 1, or January, has the oldest average age of patients admitted.
+```
+
+13. What is the name of the provider that has the highest total charge?
+```{r}
+df_cleaned %>% 
+  group_by(provider) %>% 
+  summarise(avg_total_charge = mean(tot))
+# Provider number 7215, or Bradley, has the highest total charge on average. 
+```
+
+14. What is the name of the provider that has the least total charge for teenage male?
+```{r}
+df_cleaned %>% 
+  filter(sex == 1 & age %in% c(13:17)) %>% 
+  group_by(provider) %>% 
+  summarise(avg_total_charge = mean(tot))
+# Provider number 7202, or St. Joseph Health Services of RI has the average least total charges for teenage males.
+```
+
+15. Calculate the length of stays by races.  Which race has the longest length of stays on average?
+```{r}
+df_cleaned %>% 
+  group_by(raceethn) %>% 
+  summarise(avg_los = mean(los))
+# The longest average length of stay is for Unknown Races (9), but for known races, the longest average length of stay is for American Indian, not Hispanic patients.
+```
+
+16. On average, how much a 20 year-old male white get charged for staying 1 day?
+```{r}
+df_cleaned %>% 
+  filter(sex == 1 & raceethn == 1 & age == 20 & los == 1) %>% 
+  summarise(avg_total_charge = mean(tot))
+```
+
+-------
+
+## II. Data Visualization
+
+Continue with the data from part I. 
+
+1. Provides at least 10 meaningful plots. Comments on the plots. All plots should have title, caption, appropriate labels on x and y-axis
+
+  - Plot 1
+```{r}
+df_cleaned %>% 
+  ggplot(aes(x=age)) + geom_histogram() + labs(x="Age",y="Count",title="Age Distribution of Patients",caption="The strongest concentrations of patients are age 0 (babies), age 30 and age 65.")
+```
+  - Plot 2
+```{r}
+df_cleaned %>% 
+  group_by(sex) %>% 
+  ggplot(aes(x=provider)) + geom_bar() + labs(x="Provider",y="Count",title="Number of Patients by Provider",caption="Rhode Island Hospital has the most amount of patients in the year 2018.")
+```
+
+
+  - Plot 3
+```{r}
+df_cleaned %>% 
+  group_by(sex) %>% 
+  ggplot(aes(x=factor(moa),fill=sex)) + geom_bar(position = 'fill') + labs(x="Month of Admission",y="Fill",title="Male vs. Female Patient Admits by Month",caption="The ratio of male:female is consistent across the months, but there are always more female admits.")
+```
+
+  - Plot 4
+```{r}
+df_cleaned %>%
+  filter(los <= 200 & tot <= 1000000) %>% 
+  ggplot(aes(x=los,y=tot)) + geom_point(position = 'jitter') + labs(x="Length of Stay",y="Total cost",title="Total Cost vs. Length of Stay",caption="This graph demonstrates that the longer a person stays the more they will be charged.")
+```
+
+  - Plot 5
+```{r}
+df_cleaned %>%
+  filter(los <= 200 & tot <= 1000000 & raceethn %in% c(1:7)) %>% 
+  ggplot(aes(x=los,y=tot,color=raceethn)) + geom_point(position = 'jitter') + facet_wrap(~raceethn) + labs(x="Length of Stay",y="Total Cost",title="Total Cost vs. Length of Stay by Race",color="Race",caption="There is much more data for white patients than any other type of patient, so it is a difficult basis for comparison. However, it seems as though Hispanic patients (7) have a steeper slope for cost than other races.")
+```
+
+  - Plot 6
+```{r}
+df_cleaned %>% 
+  filter(raceethn %in% c(1:7)) %>% 
+  ggplot(aes(x=provider,fill=raceethn)) + geom_bar() + labs(x="Provider",y="Patients",title="Patients by Race for each Provider in 2018",caption="White patients are again dominant for all providers, but 7205 and 7214 have more minority patients than other providers.",fill="Race")
+```
+
+  - Plot 7
+```{r}
+df_cleaned %>% 
+  filter(sex %in% c(1:2)) %>% 
+  ggplot(aes(x=age,y=sex)) + geom_boxplot() + labs(x="Age",y="Sex",title="Distribution of Age by Sex",caption="On average, male patients are older than females, although the distribution for females is larger.")
+```
+
+  - Plot 8
+```{r}
+df_cleaned %>% 
+  filter(sex %in% c(1:2),tot < 50000) %>% 
+  ggplot(aes(x=tot,y=sex)) + geom_boxplot() + labs(x="Total Cost",y="Sex",title="Total Cost by Sex",caption="The median cost for male and female patients is almost exactly the same, but the first and third quartiles are a little more outstretched for males than females.")
+```
+
+  - Plot 9
+```{r}
+df_cleaned %>% 
+  group_by(provider) %>% 
+  summarise(avg_los = mean(los)) %>% 
+  ggplot(aes(x=provider,y=avg_los)) + geom_col() + labs(x="Provider",y="Average Length of Stay",title="Average Length of Stay by Provider",caption="Provider 7215, Bradley is the outlier with a much longer average stay than all other providers.")
+```
+
+  - Plot 10
+```{r}
+df_cleaned %>% 
+  filter(raceethn %in% c(1:7)) %>% 
+  group_by(provider,raceethn) %>% 
+  summarise(avg_tot = mean(tot)) %>% 
+  ggplot(aes(x=provider,y=avg_tot,fill=raceethn)) + geom_col(position = 'fill') +
+  labs(x="Provider",y="Share of Average Total Cost",title="Average Total Cost by Provider and Race",caption="Between providers, there is a good amount of variation between what share different races have of the total cost in a given year.",fill="Race")
+```
+
+
+2. Make an animation
+```{r}
+library(gganimate)
+df_cleaned %>% 
+  group_by(provider,moa) %>% 
+  summarise(patients = n()) %>% 
+  ggplot(aes(x=moa,y=patients,color=provider)) + geom_line() + geom_point(size=3) +
+  transition_reveal(moa) + labs(x="Month of Admission",y="Number of Patients",color="Provider",title="Fluctuation of Patients by Provider over 2018",caption="Three distinct groups emerge: 1) Rhode Island Hospital has the most patients and is the outlier, 2) three providers are in the middle of the pack, 3) the other hospitals are not as large and don't admit nearly as many patients each month.")
+```
+
+-------
+
+## III. Predictive Models
+
+Continue with the data from part I. Use the follows as the target and input variables: 
+
+*Target Variable*: Create the target variable taking value of 
+
+  - `low cost` if the total charge of a patient (`tot`) is smaller than the median of the total charge, and
+
+  - `high cost` otherwise. 
+```{r}
+median(df_cleaned$tot)
+df_cleaned$target <- case_when(
+  df_cleaned$tot <21854 ~ 'low cost',
+  TRUE ~ 'high cost'
+)
+```
+
+*Input Variables*:
+
+  - "age","sex","raceethn","provider","moa","mod","admtype","campus", 'los'
+```{r}
+df_model <- df_cleaned %>% 
+  select(target,age,sex,raceethn,provider,moa,mod,admtype,campus,los) %>% 
+  filter(admtype != '' & raceethn != '' & sex != 9)
+
+str(df_model)
+df_model$target <- factor(df_model$target)
+df_model$sex <- factor(df_model$sex)
+df_model$raceethn <- factor(df_model$raceethn)
+df_model$provider <- factor(df_model$provider)
+df_model$moa <- factor(df_model$moa)
+df_model$mod <- factor(df_model$mod)
+df_model$admtype <- factor(df_model$admtype)
+df_model$campus <- factor(df_model$campus)
+str(df_model)
+```
+  
+-------
+
+1. Set Training : Testing Split = 10 : 90 
+```{r}
+library(caret)
+set.seed(2020)
+splitIndex <- createDataPartition(df_model$target, p = .10, 
+                                  list = FALSE)
+df_train <- df_model[ splitIndex,]
+df_test <- df_model[-splitIndex,]
+```
+
+2. Train a decision tree using `rpart`.  Plot the decision tree. Plot the variable importance ranked by the tree. 
+```{r}
+library(rpart)
+tree_model <- rpart(target ~ ., data = df_train,
+                 control = rpart.control(maxdepth = 4))
+barplot(tree_model$variable.importance)
+```
+
+3. Using caret for this question. Set `Training Control` to be: Use Cross-Validation of 5 folds across all models.  Train & tune at least 3 different models (i.e. three different values for `method=` in the train function of caret).  Plot the hyper-parameter tuning plots for each model. 
+```{r}
+# Random forest using method "rf"
+library(randomForest)
+tuneGrid <-  expand.grid(mtry = 2:4)
+trControl <-  trainControl(method = "cv", number = 5)
+forest_cv <- train(target~., data=df_train, 
+                                method = "rf", 
+                                trControl = trControl,
+                                tuneGrid = tuneGrid)
+plot(forest_cv)
+print(forest_cv)
+
+# Random forest using method "ranger"
+library(ranger)
+tuneGrid1 <-  expand.grid(mtry = 2:4,
+                       splitrule = c('gini', 'extratrees'),
+                       min.node.size = c(1:10))
+trControl1 <-  trainControl(method = "cv",
+                            number = 5)
+forest_cv1 <- train(target~., data=df_train, 
+                                method = "ranger", 
+                                trControl = trControl1,
+                                tuneGrid = tuneGrid1)
+plot(forest_cv1)
+print(forest_cv1)
+
+# Boosted Logistic Regression
+library(caTools)
+tuneGrid2 <-  expand.grid(nIter = 2:6)
+trControl2 <-  trainControl(method = "cv",
+                            number = 5)
+boost_model <- train(target~., data=df_train, 
+                                method = "LogitBoost", 
+                                trControl = trControl2,
+                                tuneGrid = tuneGrid2)
+plot(boost_model)
+print(boost_model)
+```
+
+4. Plot the comparison of the models in 3. 
+```{r}
+results <- resamples(list(forest_rf = forest_cv,
+                          forest_ranger = forest_cv1,
+                          boost = boost_model))
+bwplot(results)
+```
+
+5. What is your final selection for the model? Test the accuracy of your final model on the test data. 
+
+Final model selection is boosted logistic regression because it has the highest accuracy.
+```{r}
+pred <- predict(boost_model,df_test)
+cm <- confusionMatrix(data = factor(pred), reference = df_test$target, positive = "high cost")
+cm$overall[1]
+```
+
+6. Create another `target` variable (binary), decide the input variables and redo 1 to 5. 
+```{r}
+# Creation of model
+median(df_cleaned$los)
+df_cleaned$target1 <- case_when(
+  df_cleaned$los <3 ~ 'short',
+  TRUE ~ 'long'
+)
+
+df_model1 <- df_cleaned %>% 
+  select(target1,age,sex,raceethn,provider,moa,mod,admtype,campus,icu) %>%
+  filter(admtype != '' & raceethn != '' & sex != 9)
+
+str(df_model1)
+df_model1$target1 <- factor(df_model1$target1)
+df_model1$sex <- factor(df_model1$sex)
+df_model1$raceethn <- factor(df_model1$raceethn)
+df_model1$provider <- factor(df_model1$provider)
+df_model1$moa <- factor(df_model1$moa)
+df_model1$mod <- factor(df_model1$mod)
+df_model1$admtype <- factor(df_model1$admtype)
+df_model1$campus <- factor(df_model1$campus)
+df_model1$icu <- as.numeric(df_model1$icu)
+str(df_model1)
+
+set.seed(2020)
+
+splitIndex <- createDataPartition(df_model1$target1, p = .10, 
+                                  list = FALSE)
+df_train1 <- df_model1[ splitIndex,]
+df_test1 <- df_model1[-splitIndex,]
+
+# Decision Tree
+tree_model1 <- rpart(target1 ~ ., data = df_train1,
+                 control = rpart.control(maxdepth = 4))
+barplot(tree_model1$variable.importance)
+
+# Other models
+# Random forest using method "rf"
+tuneGrid <-  expand.grid(mtry = 2:4)
+trControl <-  trainControl(method = "cv", number = 5)
+forest_cv2 <- train(target1~., data=df_train1, 
+                                method = "rf", 
+                                trControl = trControl,
+                                tuneGrid = tuneGrid)
+plot(forest_cv2)
+print(forest_cv2)
+
+# Random forest using method "ranger"
+tuneGrid1 <-  expand.grid(mtry = 2:4,
+                       splitrule = c('gini', 'extratrees'),
+                       min.node.size = c(1:10))
+trControl1 <-  trainControl(method = "cv",
+                            number = 5)
+forest_cv3 <- train(target1~., data=df_train1, 
+                                method = "ranger", 
+                                trControl = trControl1,
+                                tuneGrid = tuneGrid1)
+plot(forest_cv3)
+print(forest_cv3)
+
+# Boosted Logistic Regression
+tuneGrid2 <-  expand.grid(nIter = 2:6)
+trControl2 <-  trainControl(method = "cv",
+                            number = 5)
+boost_model1 <- train(target1~., data=df_train1, 
+                                method = "LogitBoost", 
+                                trControl = trControl2,
+                                tuneGrid = tuneGrid2)
+plot(boost_model1)
+print(boost_model1)
+
+#Comparison of Models
+results1 <- resamples(list(forest_rf = forest_cv2,
+                          forest_ranger = forest_cv3,
+                          boost = boost_model1))
+bwplot(results1)
+```
+
+The final chosen model is the Boosted Logistic Regression again because it had the highest accuracy.
+
+```{r}
+pred1 <- predict(boost_model1,df_test1)
+cm1 <- confusionMatrix(data = pred1, reference = df_test1$target1, positive = "long")
+cm1$overall[1]
+```
+
+-------
