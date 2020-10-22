@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Midterm Project</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kaitlyn Fales" />
+    <meta name="date" content="2020-10-26" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+    <script src="libs/anchor-sections/anchor-sections.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Midterm Project
+### Kaitlyn Fales
+### 10/26/20
+
+---
+
+
+
+
+
+
+
+
+
+class: inverse, middle, center
+# Visualizations
+
+---
+# Plot 1
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+---
+# Plot 2
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+---
+# Plot 3
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+---
+# Plot 4
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+---
+# Plot 5
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+---
+# Plot 6
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+---
+# Plot 7
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+---
+# Plot 8
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+---
+# Plot 9
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+---
+# Plot 10
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+---
+# Animation
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-12-1.gif)&lt;!-- --&gt;
+---
+class: inverse, middle, center
+# Predictive Models
+---
+# The Models I Chose
+
+- Random Forest using method = 'rf'
+- Random Forest using method = 'ranger'
+- Boosted Logistic Regression, method = 'LogitBoost'
+
+---
+# Modelling Total Cost
+**Random Forest using method = 'rf'**
+
+
+```r
+plot(forest_cv)
+```
+
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+
+---
+# Modelling Total Cost
+**Random Forest using method = 'ranger'**
+
+
+```r
+plot(forest_cv1)
+```
+
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+
+---
+# Modelling Total Cost
+**Boosted Logistic Regression, method = 'LogitBoost'**
+
+
+```r
+plot(boost_model)
+```
+
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
+
+---
+# Model Comparison for Total Cost
+
+- The best model is the Boosted Logistic Regression
+
+
+```r
+bwplot(results)
+```
+
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+
+---
+# Final Model Accuracy
+
+
+```r
+pred &lt;- predict(boost_model,df_test)
+cm &lt;- confusionMatrix(data = factor(pred), reference = df_test$target, positive = "high cost")
+cm$overall[1]
+```
+
+```
+##  Accuracy 
+## 0.8763689
+```
+
+---
+# Modelling Length of Stay
+
+- Target was a patient's length of stay ('los')
+- Similar to the first set of models, a value less than the median (3 days) was coded as 'short' and a value greater than 3 was coded as 'long'
+- Input variables are similar to the other models, only total cost was taken out, and # of days in ICU was put in
+
+
+```r
+median(df_cleaned$los)
+df_cleaned$target1 &lt;- case_when(
+  df_cleaned$los &lt;3 ~ 'short',
+  TRUE ~ 'long'
+)
+
+df_model1 &lt;- df_cleaned %&gt;% 
+  select(target1,age,sex,raceethn,provider,moa,mod,admtype,campus,icu) %&gt;%
+  filter(admtype != '' &amp; raceethn != '' &amp; sex != 9)
+```
+
+---
+# Modelling Length of Stay
+**Random Forest using method = 'rf'**
+
+
+```r
+plot(forest_cv2)
+```
+
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
+
+---
+# Modelling Length of Stay
+**Random Forest using method = 'ranger'**
+
+
+```r
+plot(forest_cv3)
+```
+
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
+
+---
+# Modelling Length of Stay
+**Boosted Logistic Regression, method = 'LogitBoost'**
+
+
+```r
+plot(boost_model1)
+```
+
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
+
+---
+# Model Comparison for Length of Stay
+
+- The best model is the Boosted Logistic Regression
+
+
+```r
+bwplot(results1)
+```
+
+![](Midterm-Project-Presentation_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+
+---
+# Final Model Accuracy
+
+
+```r
+pred1 &lt;- predict(boost_model1,df_test1)
+cm1 &lt;- confusionMatrix(data = pred1, reference = df_test1$target1, positive = "long")
+cm1$overall[1]
+```
+
+```
+##  Accuracy 
+## 0.8792879
+```
+---
+# Modelling Issues
+
+- Issues with missing values for some variables (blank values)
+- Issues with variables not being of the correct class (ex. 'icu' was a character)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
