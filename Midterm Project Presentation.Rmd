@@ -1,0 +1,358 @@
+---
+title: "Midterm Project"
+author: "Kaitlyn Fales"
+date: "10/26/20"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+```
+
+
+```{r, include=FALSE, message=FALSE}
+library(caret)
+library(tidyverse)
+library(knitr)
+library(rpart)
+library(randomForest)
+library(ranger)
+library(caTools)
+library(haven)
+library(gganimate)
+df <- read_sas('Midterm_Data.sas7bdat')
+df_cleaned <- df %>% 
+  filter(yod == "18")
+df_cleaned <- df_cleaned %>% 
+  select(yod,payfix,pay_ub92,age,sex,raceethn,provider,moa,yoa,mod,admtype,
+         asource,preopday,los,service,icu,ccu,dispub92,payer,drg,trandb,
+         randbg,randbs,orr,anes,seq,lab,dtest,ther,blood,phar,other,patcon,
+         bwght,total,tot,ecodub92,b_wt,pt_state,diag_adm,ancilar,campus,
+         er_fee,er_chrg,er_mode,obs_chrg,obs_hour,psycchrg,nicu_day)
+df_cleaned <- df_cleaned %>% 
+  select(-payfix,-preopday,-obs_hour,-nicu_day)
+median(df_cleaned$tot)
+df_cleaned$target <- case_when(
+  df_cleaned$tot <21854 ~ 'low cost',
+  TRUE ~ 'high cost'
+)
+df_model <- df_cleaned %>% 
+  select(target,age,sex,raceethn,provider,moa,mod,admtype,campus,los) %>% 
+  filter(admtype != '' & raceethn != '' & sex != 9)
+
+str(df_model)
+df_model$target <- factor(df_model$target)
+df_model$sex <- factor(df_model$sex)
+df_model$raceethn <- factor(df_model$raceethn)
+df_model$provider <- factor(df_model$provider)
+df_model$moa <- factor(df_model$moa)
+df_model$mod <- factor(df_model$mod)
+df_model$admtype <- factor(df_model$admtype)
+df_model$campus <- factor(df_model$campus)
+str(df_model)
+set.seed(2020)
+splitIndex <- createDataPartition(df_model$target, p = .10, 
+                                  list = FALSE)
+df_train <- df_model[ splitIndex,]
+df_test <- df_model[-splitIndex,]
+median(df_cleaned$los)
+df_cleaned$target1 <- case_when(
+  df_cleaned$los <3 ~ 'short',
+  TRUE ~ 'long'
+)
+
+df_model1 <- df_cleaned %>% 
+  select(target1,age,sex,raceethn,provider,moa,mod,admtype,campus,icu) %>%
+  filter(admtype != '' & raceethn != '' & sex != 9)
+
+str(df_model1)
+df_model1$target1 <- factor(df_model1$target1)
+df_model1$sex <- factor(df_model1$sex)
+df_model1$raceethn <- factor(df_model1$raceethn)
+df_model1$provider <- factor(df_model1$provider)
+df_model1$moa <- factor(df_model1$moa)
+df_model1$mod <- factor(df_model1$mod)
+df_model1$admtype <- factor(df_model1$admtype)
+df_model1$campus <- factor(df_model1$campus)
+df_model1$icu <- as.numeric(df_model1$icu)
+str(df_model1)
+
+splitIndex <- createDataPartition(df_model1$target1, p = .10, 
+                                  list = FALSE)
+df_train1 <- df_model1[ splitIndex,]
+df_test1 <- df_model1[-splitIndex,]
+
+```
+
+
+class: inverse, middle, center
+# Visualizations
+
+---
+# Plot 1
+```{r,message=FALSE,echo=FALSE}
+df_cleaned %>% 
+  ggplot(aes(x=age)) + geom_histogram() + labs(x="Age",y="Count",title="Age Distribution of Patients",caption="The strongest concentrations of patients are age 0 (babies), age 30 and age 65.")
+```
+---
+# Plot 2
+```{r,message=FALSE,echo=FALSE}
+df_cleaned %>% 
+  group_by(sex) %>% 
+  ggplot(aes(x=provider)) + geom_bar() + labs(x="Provider",y="Count",title="Number of Patients by Provider",caption="Rhode Island Hospital has the most amount of patients in the year 2018.")
+```
+---
+# Plot 3
+```{r,message=FALSE,echo=FALSE}
+df_cleaned %>% 
+  group_by(sex) %>% 
+  ggplot(aes(x=factor(moa),fill=sex)) + geom_bar(position = 'fill') + labs(x="Month of Admission",y="Fill",title="Male vs. Female Patient Admits by Month",caption="The ratio of male:female is consistent across the months, but there are always more female admits.")
+```
+---
+# Plot 4
+```{r,message=FALSE,echo=FALSE}
+df_cleaned %>%
+  filter(los <= 200 & tot <= 1000000) %>% 
+  ggplot(aes(x=los,y=tot)) + geom_point(position = 'jitter') + labs(x="Length of Stay",y="Total cost",title="Total Cost vs. Length of Stay",caption="This graph demonstrates that the longer a person stays the more they will be charged.")
+```
+---
+# Plot 5
+```{r,message=FALSE,echo=FALSE}
+df_cleaned %>%
+  filter(los <= 200 & tot <= 1000000 & raceethn %in% c(1:7)) %>% 
+  ggplot(aes(x=los,y=tot,color=raceethn)) + geom_point(position = 'jitter') + facet_wrap(~raceethn) + labs(x="Length of Stay",y="Total Cost",title="Total Cost vs. Length of Stay by Race",color="Race",caption="There is much more data for white patients than any other type of patient, so it is a difficult basis for comparison. However, it seems as though Hispanic patients (7) have a steeper slope for cost than other races.")
+```
+---
+# Plot 6
+```{r,echo=FALSE}
+df_cleaned %>% 
+  filter(raceethn %in% c(1:7)) %>% 
+  ggplot(aes(x=provider,fill=raceethn)) + geom_bar() + labs(x="Provider",y="Patients",title="Patients by Race for each Provider in 2018",caption="White patients are again dominant for all providers, but 7205 and 7214 have more minority patients than other providers.",fill="Race")
+```
+---
+# Plot 7
+```{r,echo=FALSE}
+df_cleaned %>% 
+  filter(sex %in% c(1:2)) %>% 
+  ggplot(aes(x=age,y=sex)) + geom_boxplot() + labs(x="Age",y="Sex",title="Distribution of Age by Sex",caption="On average, male patients are older than females, although the distribution for females is larger.")
+```
+---
+# Plot 8
+```{r,echo=FALSE}
+df_cleaned %>% 
+  filter(sex %in% c(1:2),tot < 50000) %>% 
+  ggplot(aes(x=tot,y=sex)) + geom_boxplot() + labs(x="Total Cost",y="Sex",title="Total Cost by Sex",caption="The median cost for male and female patients is almost exactly the same, but the first and third quartiles are a little more outstretched for males than females.")
+```
+---
+# Plot 9
+```{r,echo=FALSE}
+df_cleaned %>% 
+  group_by(provider) %>% 
+  summarise(avg_los = mean(los)) %>% 
+  ggplot(aes(x=provider,y=avg_los)) + geom_col() + labs(x="Provider",y="Average Length of Stay",title="Average Length of Stay by Provider",caption="Provider 7215, Bradley is the outlier with a much longer average stay than all other providers.")
+```
+---
+# Plot 10
+```{r,echo=FALSE}
+df_cleaned %>% 
+  filter(raceethn %in% c(1:7)) %>% 
+  group_by(provider,raceethn) %>% 
+  summarise(avg_tot = mean(tot)) %>% 
+  ggplot(aes(x=provider,y=avg_tot,fill=raceethn)) + geom_col(position = 'fill') +
+  labs(x="Provider",y="Share of Average Total Cost",title="Average Total Cost by Provider and Race",caption="Between providers, there is a good amount of variation between what share different races have of the total cost in a given year.",fill="Race")
+```
+---
+# Animation
+```{r,echo=FALSE}
+df_cleaned %>% 
+  group_by(provider,moa) %>% 
+  summarise(patients = n()) %>% 
+  ggplot(aes(x=moa,y=patients,color=provider)) + geom_line() + geom_point(size=3) +
+  transition_reveal(moa) + labs(x="Month of Admission",y="Number of Patients",color="Provider",title="Fluctuation of Patients by Provider over 2018",caption="Three distinct groups emerge: 1) Rhode Island Hospital has the most patients and is the outlier, 2) three providers are in the middle of the pack, 3) the other hospitals are not as large and don't admit nearly as many patients each month.")
+```
+---
+class: inverse, middle, center
+# Predictive Models
+---
+# The Models I Chose
+
+- Random Forest using method = 'rf'
+- Random Forest using method = 'ranger'
+- Boosted Logistic Regression, method = 'LogitBoost'
+
+---
+# Modelling Total Cost
+**Random Forest using method = 'rf'**
+```{r,echo=FALSE}
+library(randomForest)
+tuneGrid <-  expand.grid(mtry = 2:4)
+trControl <-  trainControl(method = "cv", number = 5)
+forest_cv <- train(target~., data=df_train, 
+                                method = "rf", 
+                                trControl = trControl,
+                                tuneGrid = tuneGrid)
+```
+```{r,fig.width=5,fig.height=4}
+plot(forest_cv)
+```
+
+---
+# Modelling Total Cost
+**Random Forest using method = 'ranger'**
+```{r,echo=FALSE,message=FALSE}
+library(ranger)
+tuneGrid1 <-  expand.grid(mtry = 2:4,
+                       splitrule = c('gini', 'extratrees'),
+                       min.node.size = c(1:10))
+trControl1 <-  trainControl(method = "cv",
+                            number = 5)
+forest_cv1 <- train(target~., data=df_train, 
+                                method = "ranger", 
+                                trControl = trControl1,
+                                tuneGrid = tuneGrid1)
+```
+```{r,fig.width=5,fig.height=4}
+plot(forest_cv1)
+```
+
+---
+# Modelling Total Cost
+**Boosted Logistic Regression, method = 'LogitBoost'**
+```{r,echo=FALSE}
+library(caTools)
+tuneGrid2 <-  expand.grid(nIter = 2:6)
+trControl2 <-  trainControl(method = "cv",
+                            number = 5)
+boost_model <- train(target~., data=df_train, 
+                                method = "LogitBoost", 
+                                trControl = trControl2,
+                                tuneGrid = tuneGrid2)
+```
+```{r,fig.width=5,fig.height=4}
+plot(boost_model)
+```
+
+---
+# Model Comparison for Total Cost
+
+- The best model is the Boosted Logistic Regression
+```{r,echo=FALSE}
+results <- resamples(list(forest_rf = forest_cv,
+                          forest_ranger = forest_cv1,
+                          boost = boost_model))
+```
+```{r,fig.width=5,fig.height=4}
+bwplot(results)
+```
+
+---
+# Final Model Accuracy
+
+```{r}
+pred <- predict(boost_model,df_test)
+cm <- confusionMatrix(data = factor(pred), reference = df_test$target, positive = "high cost")
+cm$overall[1]
+```
+
+---
+# Modelling Length of Stay
+
+- Target was a patient's length of stay ('los')
+- Similar to the first set of models, a value less than the median (3 days) was coded as 'short' and a value greater than 3 was coded as 'long'
+- Input variables are similar to the other models, only total cost was taken out, and # of days in ICU was put in
+
+```{r, message=FALSE,eval=FALSE}
+median(df_cleaned$los)
+df_cleaned$target1 <- case_when(
+  df_cleaned$los <3 ~ 'short',
+  TRUE ~ 'long'
+)
+
+df_model1 <- df_cleaned %>% 
+  select(target1,age,sex,raceethn,provider,moa,mod,admtype,campus,icu) %>%
+  filter(admtype != '' & raceethn != '' & sex != 9)
+```
+
+---
+# Modelling Length of Stay
+**Random Forest using method = 'rf'**
+```{r,echo=FALSE}
+tuneGrid <-  expand.grid(mtry = 2:4)
+trControl <-  trainControl(method = "cv", number = 5)
+forest_cv2 <- train(target1~., data=df_train1, 
+                                method = "rf", 
+                                trControl = trControl,
+                                tuneGrid = tuneGrid)
+```
+```{r,fig.width=5,fig.height=4}
+plot(forest_cv2)
+```
+
+---
+# Modelling Length of Stay
+**Random Forest using method = 'ranger'**
+```{r,echo=FALSE, message=FALSE}
+tuneGrid1 <-  expand.grid(mtry = 2:4,
+                       splitrule = c('gini', 'extratrees'),
+                       min.node.size = c(1:10))
+trControl1 <-  trainControl(method = "cv",
+                            number = 5)
+forest_cv3 <- train(target1~., data=df_train1, 
+                                method = "ranger", 
+                                trControl = trControl1,
+                                tuneGrid = tuneGrid1)
+```
+```{r,fig.width=5,fig.height=4}
+plot(forest_cv3)
+```
+
+---
+# Modelling Length of Stay
+**Boosted Logistic Regression, method = 'LogitBoost'**
+```{r,echo=FALSE}
+tuneGrid2 <-  expand.grid(nIter = 2:6)
+trControl2 <-  trainControl(method = "cv",
+                            number = 5)
+boost_model1 <- train(target1~., data=df_train1, 
+                                method = "LogitBoost", 
+                                trControl = trControl2,
+                                tuneGrid = tuneGrid2)
+```
+```{r,fig.width=5,fig.height=4}
+plot(boost_model1)
+```
+
+---
+# Model Comparison for Length of Stay
+
+- The best model is the Boosted Logistic Regression
+```{r,echo=FALSE}
+results1 <- resamples(list(forest_rf = forest_cv2,
+                          forest_ranger = forest_cv3,
+                          boost = boost_model1))
+```
+```{r,fig.width=5,fig.height=4}
+bwplot(results1)
+```
+
+---
+# Final Model Accuracy
+
+```{r}
+pred1 <- predict(boost_model1,df_test1)
+cm1 <- confusionMatrix(data = pred1, reference = df_test1$target1, positive = "long")
+cm1$overall[1]
+```
+---
+# Modelling Issues
+
+- Issues with missing values for some variables (blank values)
+- Issues with variables not being of the correct class (ex. 'icu' was a character)
