@@ -1,0 +1,156 @@
+
+---
+title: "Final Project - Building Shiny Apps"
+author: "Kaitlyn Fales"
+date: "11/24/2020"
+output: html_document
+---
+
+-------
+
+### Question 1.
+
+Install the following packages `shiny`, `packrat`, `rsconnect`. 
+
+```{r,message=FALSE}
+library(shiny)
+library(packrat)
+library(rsconnect)
+```
+
+
+In this question, you will build and publish your first shiny app. Following these steps to do so
+
+1. Create a new R Script (File -> New R Script). 
+
+2. Copy [these code](https://github.com/bryantstats/math421/blob/master/c1.R) to the file 
+
+3. Save the file as app.R file into a newly created folder. 
+
+4. Press `Ctrl + Shift + Enter` to run the app locally. 
+
+5. Go to https://www.shinyapps.io/
+
+6. Create an account 
+
+7. Go to https://www.shinyapps.io/admin/#/dashboard.  Copy the secret code. 
+
+It should look like this
+
+
+```{r, eval=FALSE}
+rsconnect::setAccountInfo(name='fall20',
+			  token='E130D64F22776383660DA7EA5251EC04',
+			  secret='mJI7rgq2Wf46g2Wf46g2WNOa+E6NRqr26yG3N5')
+```
+
+8. Go back to the app (If you closed it, hit `Ctrl + Shift + Enter` to reopen it), click to `Publish` on the top right corner. 
+
+9.  Paste the secret code and follow the instruction to publish the app on the Internet. 
+
+[Question 1 App](https://kfales.shinyapps.io/Question_1_app/)
+
+-------
+
+### Question 2
+
+Write a shiny app that can plot barplot of two categorical variables in the titanic dataset.
+
+Notice:  Two different shiny apps should be in two different folders. 
+
+[Question 2 App](https://kfales.shinyapps.io/Question_2/)
+
+-------
+
+### Question 3
+
+Write a shiny app that can plot barplot of two categorical variables in an uploaded dataset.
+
+[Question 3 App](https://kfales.shinyapps.io/Question_3/)
+
+-------
+
+### Question 4
+
+Write a shiny app that can plot the scatter plot of two numeric variables and colored by a categorical variable in an uploaded dataset. Example of the plot: https://bryantstats.github.io/math421/slides/6_viz.html#15
+
+Notice: that you can only run 5 apps on shinyapps.io.  If you are running out of apps, you may want to create another account and use multiple accounts.  You may want to try publishing a few times. You could also embed all your shiny apps in an Rmarkdown.  Do the follows to embed an shiny app to an rmarkdown. 
+
+[Question 4 App](https://kfales.shinyapps.io/Question_4/)
+  
+
+-------
+
+### Question 5 
+
+Write a shiny app create a plot for the titanic dataset.  The user inputs two variables and can change the range of `Age` (i.e., use `sliderInput`). 
+
+[Question 5 App](https://kfales.shinyapps.io/Question_5/)
+
+-------
+
+### Question 6
+
+Write a shiny app create plots for the titanic dataset. The user inputs two variables and can choose a multiple choice option (i.e., use`radioButtons`). 
+
+[Question 6 App](https://kaitlynfales.shinyapps.io/Question_6/)
+
+-------
+
+### Question 7
+
+Write a shiny app create a plot for the titanic dataset. The user inputs two variables and can choose a tick on some options of a variable (i.e., use`checkboxGroupInput`). 
+
+[Question 7 App](https://kaitlynfales.shinyapps.io/Question_7/)
+
+-------
+
+### Question 8
+
+Write a shiny app create a plot for the titanic dataset. Make uses of `selectInput`, `sliderInput`, `radioButtons`, and `checkboxGroupInput`. 
+
+[Question 8 App](https://kaitlynfales.shinyapps.io/Question_8/)
+
+-------
+
+### Question 9 
+
+Use the below data to write this shiny app: https://fall20.shinyapps.io/app9/.  Check out the app carefully to see its features. 
+
+The data: https://covidtracking.com/data/download/all-states-history.csv
+
+[Question 9 App](https://kaitlynfales.shinyapps.io/Question_9/)
+
+-------
+
+### Question 10 
+
+Make uses of `selectInput`, `sliderInput`, `radioButtons`, and `checkboxGroupInput` to write the second app on the data used on question 9. 
+
+The data: https://covidtracking.com/data/download/all-states-history.csv
+
+[QUestion 10 App](https://kaitlynfales.shinyapps.io/Question_10/)
+
+-------
+
+### Question 11
+
+Write a shiny app on own selected data.  Make uses of `selectInput`, `sliderInput`, `radioButtons`, and `checkboxGroupInput`. 
+
+[Question 11 App](https://kaitlynfales421.shinyapps.io/Question_11/)
+
+-------
+
+### Question 12
+
+Follow this below example to include `navbarPage` to the app in Question 11. You can also write another app that make uses of `selectInput`, `sliderInput`, `radioButtons`, `checkboxGroupInput` and `navbarPage`.
+
+[Question 12 App](https://kaitlynfales421.shinyapps.io/Question_12/)
+
+-------
+
+### Question 13
+
+Present your shiny app in Question 12 on the final exam day. 
+
+-------
