@@ -1,0 +1,751 @@
+---
+title: Examining the Twitter Conversation Between CNN, Fox News, Reuters, Sean Hannity, and Keith Olbermann During the Height of the 2020 Election
+author: "Kaitlyn Fales and Dr. Son Nguyen, Bryant University"
+date: "17 May 2021"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+# **Abstract**
+
+America is largely divided in politics, and the media is part of this hyperpolarized climate. Social media is also becoming a large part of our lives, with Twitter often being labeled as more of an echo chamber for opinions than anything else (Kever 2020). Even with people recognizing the potential unreliability of social media for political information, people still seem to flock to it, especially when people like Donald Trump use social media to “rule by tweet” (Owen 2019). The 2020 election is a perfect example of this divide, and this research examines the tweets of five key political news figureheads throughout the height of the 2020 election to identify patterns and signs of partisan polarization at the granular level. By breaking tweets down word-for-word, this analysis demonstrates key differences between common news sources like CNN and Fox, as well as between political commentators like Sean Hannity and Keith Olbermann. Sentiment analysis of these users’ tweets during the time period also showed statistically significant and visually significant differences in average sentiment, even when news sources should be reporting the facts and remaining neutral. The results of this analysis further demonstrate the difference between strictly fact reporting, and news sources turning facts into a larger, and possibly biased narrative that political consumers should be aware of when choosing how and where to get their news.
+
+##### *Keywords:* Twitter, 2020 election, sentiment analysis, media, polarization 
+
+
+
+# **Introduction**
+
+The United States political atmosphere is hyperpolarized, with Republicans going further to the right, and Democrats further to the left, and it is no surprise that the media demonstrates this as well (Abramowitz 2011; Jurkowitz et al. 2020; Levendusky 2009; Mason 2018). The 2020 presidential election came at a time of not only political unrest due to increased polarization, but also amidst a pandemic, which presented its own unique challenges. 
+
+As social media continues to rise in popularity and change the ways in which political media and campaign news is consumed (Owen 2019), it is becoming increasingly important to examine political news at the granular, word-for-word level in order to identify important patterns as well as differences among sources. The primary goal of this paper is to examine the Twitter conversation from five key political figureheads during the height of the 2020 election, with three being internationally recognized mainstream media organizations - CNN, Fox News, and Reuters - and the other two being recognized political commentators - Sean Hannity and Keith Olbermann. 
+
+Between the five sources listed, text mining analysis was conducted to examine key differences in the users' frequently used words, correlations amongst top words, the overall emotional association of words across the users' tweets, and sentiment analysis. A Shiny application was also published as a part of this project to interactively display differences in Twitter sentiment across the various users. Overall, the findings of this project visually and statistically show the differences in Twitter sentiment and commonly used words between the users, which further reinforces the partisan divide in the United States even at a granular level.
+
+
+# **Literature Review**
+
+Before establishing the purpose behind this paper, it is first important to establish the rise of social media in politics, and especially on Twitter. Then, I will discuss partisan bias and its relationship with political media in the 2020 election which will build the framework for my choice of Twitter users in this study. Finally, I will round out my discussion of the relevant literature by briefly discussing one of the most important political figures on Twitter prior to the permanent suspension of his account in January 2021 (Twitter Inc.): Donald Trump (@realDonaldTrump).
+
+## The Rise of Social Media in Politics
+
+As technology has evolved, so has political media. Starting with the 1980s infotainment trend, the avenues and methods for political media consumption have grown exponentially, especially once the Internet emerged in the 1990s (Owen 2019). In terms of social media specifically, Barack Obama was the first presidential candidate to incorporate social media advertising in his 2008 campaign, which “exploited the networking, collaborating, and community-building potential of social media” (Owen 2019). Because of the networking aspect of social media in users’ abilities to like, comment, share, retweet, etc., Obama had unlocked a well of untapped potential for political campaigns, political elites, and the everyday voter to use and spread information about politics. 
+
+Social media also allows for incumbents and newcomers to the political world to communicate with the public directly in ways that were not easily accessible before (“How Social Media…” 2020). Research shows that political newcomers can attract more public notice and garner support through the use of social media channels, which is key because the cost of running a political campaign is notoriously expensive (Petrova, Sen, and Yildirim 2016). In addition, because social media is more and more prominent amongst the younger generations, it is often suggested that social media is a great tool for younger individuals to get involved in politics, as they are typically less involved than older generations (Keating and Melis 2017). However, Keating and Melis (2017) came to the conclusion that social media only further mobilizes young adults who are already interested in politics but does not engage those who had not shown interest previously. 
+
+All of this results in a double-edged sword: all political advertisements and posts about politics are all perfectly legal under the First Amendment, even if the content being spread is false (Nott 2020). Social media is a fantastic way of disseminating information, but this also results in echo chambers and the spreading of mis- and disinformation (Nott 2020). In order to combat this, different media companies have taken different approaches to handling misinformation on their platforms, with Twitter being one to completely ban political advertisements (Nott 2020). However, this ban does not stop Twitter users, political elites, everyday voters, and organizations alike, from tweeting about politics. It is because of this that misinformation and the way that politics are talked about can still be displayed in a variety of different ways, and it is because of this that I aim to examine the granular differences in sentiment and commonly used words amongst different popular Twitter users in the political space. 
+
+## Partisan Bias and Its Relationship with Political Media in 2020
+
+It has already been established above that the political atmosphere is extremely polarized, and this leads to biases being present in nearly every aspect of politics, and the media is no exception. The Cornell University Library defines bias as “a tendency to believe that some people, ideas, etc., are better than others, which often results in treating some people unfairly,” and defines confirmation bias as “our subconscious tendency to seek and interpret information and other evidence in ways that affirms our existing beliefs…” (“Fake News…” 2021). 
+
+Given the deep divide between Democrats and Republicans, these biases come into play when consuming political media in what sources people ultimately trust and don’t trust. A 2020 survey from Pew Research Center finds that out of 30 news sources, Democrats tend to trust 22 of those sources, while Republicans tend to trust only 7, with the divide even more pronounced among liberal Democrats and conservative Republicans (Jurkowitz et al. 2020). This gap is also wider than it was just five years ago, which again speaks to the increasing levels of partisan polarization in the United States (Jurkowitz et al. 2020). What is perhaps more interesting though is that 65 percent of Republicans and Republican leaners say that they trust Fox News, and about 67 percent of Democrats and Democratic leaners say that they trust CNN (Jurkowitz et al. 2020). However, for Democrats, CNN is one of multiple sources that are trusted and used regularly for news, whereas Republicans flock to Fox News almost exclusively (Jurkowitz et al. 2020). 
+
+Furthermore, when it comes to the 2020 election, people are worried about bias in the news and media, but not for themselves. In a Gallup poll, “69 percent of respondents said they are more concerned about how media bias is affecting others compared to just 29 percent who said they are more concerned about how media bias is affecting them personally” (“Most People…” 2020). Even with these concerns about bias though, people still continue to rely on mainstream media and television news (Kever 2020). It is also important to note that the bias that is introduced in most information published by mainstream media occurs in the news analysis stage, not the news gathering stage (“Fake News…” 2021). The Cornell University Library distinguishes the two by explaining that news gathering is the actual concrete gathering of facts, and the news analysis is the larger narrative that is created by the news organization surrounding these facts (“Fake News…” 2021). Therefore, it is extremely important to examine how a news source discusses the larger narrative within a story to actually see the biases present, and this can be shown simply in the types of words used and overall sentiment, which is what part of this project examines. 
+
+## Donald Trump: A Twitter Political Figurehead
+
+Finally, I’d like to briefly discuss Donald Trump’s relationship with Twitter, as he used it quite frequently leading up to and throughout his presidency as a means of communication with the people. Most importantly, “Donald Trump’s presidency has ushered in an era of ‘rule by tweet,’ as politicians make key pronouncements and conduct government business through Twitter” (Owen 2019). Trump’s Twitter account was permanently disabled by the company on January 8th, 2021 “due to the risk of further incitement of violence” following the events of January 6th, and therefore, his tweets were not considered in this analysis (Twitter Inc.). 
+
+However, Masha Maksimava analyzed Trump’s Twitter account from its creation in 2009 up through the beginning of 2019, in a very similar fashion to the methodology used in this paper. Looking at his most frequently used words, Maksimava found that in the history of Trump’s account, the most commonly used words were “great”, “president”, “country”, “people”, “America”, and “Obama” (2019). As Maksimava shorted the timeline to look just at the last month (December 8, 2018 to January 8, 2019), some new popular words were “wall”, “border”, “Democrats”, and “security” (2019). Maksimava analyzed Trump’s tweets throughout time by examining word clouds, which will be part of the analysis conducted here as well. 
+
+Now that the importance of social media in politics has been established, as well as how this connects to partisan media bias in the 2020 election, the purpose of this paper is to look at the role of traditional media outlets and commentators on Twitter during the height of the 2020 election. The height of the 2020 election in this case refers to the time period between September 1st, 2020 up through Joe Biden’s inauguration on January 20th, 2021. The reason for this period being extended through the inauguration is because of the aftermath of the 2020 election being extended longer than usual, as well as to consider the effects of the pandemic on the election (mail-in ballots, recounts, etc.). This research specifically looks at the tweets from CNN, Fox News, Reuters, Keith Olbermann, and Sean Hannity to examine the differences among the users in a variety of difference analyses including frequently used words, correlations among frequent words, and sentiment analysis. The findings of this paper will help shed light on the ways in which news organizations and political commentators engage with their audiences on Twitter through their choice of words, especially during a hyper-political time period such as the 2020 election.
+
+
+# **Methodology**
+
+## Choosing the Twitter Users
+
+In order to properly examine these granular partisan differences, five Twitter users were chosen to conduct the analysis with. The [**Ad Fontes Media Bias Chart**](https://www.adfontesmedia.com/interactive-media-bias-chart/) is a comprehensive, methodologically sound way for the everyday user to examine the level of bias and reliability present within the most popular news sources. The bias and reliability scores for each of the three news sources were noted and references prior to conducting any analysis.
+
+Since CNN and Fox News are traditionally thought of as the television news choice for the left and right, respectively, based on the article from Pew Research Center, their main Twitter accounts (@CNN and @FoxNews) were chosen to represent the news choice of the left and right (Jurkowitz et al. 2020). Based on the Ad Fontes Media Bias Chart, as of May 2021, CNN had a bias score of -12.15 (skews left) and a reliability score of 42.43 (reliable for news, but high in opinion content), while Fox News had a bias score of 17.19 (in between skews right and hyper-partisan right) and a reliability score of 32.90 (some reliability issues and/or extremism). 
+
+For the sake of comparison, a third, more neutral source was introduced into the analysis: Reuters (Twitter handle @Reuters). As of May 2021, the bias chart gives Reuters a bias score of -7.37 (in between neutral and skews left) and a reliability score of 51.27 (most reliable for news). Pryor (2020) also analyzed the media bias chart and found that Reuters was the second highest ranked source when considering bias and reliability together, which helps further justify this as an appropriate neutral comparison source. 
+
+In addition to the three news organization Twitter accounts, two political commentators’ accounts were also chosen to compare, again with one from the left and one from the right. The choices here were based on what a conservative think tank (Media Research Center) and a progressive think tank (Media Matters for America) each ranked as the most politically biased and hated political commentators from their point of view (Fox 2011). Based on these rankings, as well as how active each commentator was on Twitter, Sean Hannity (@seanhannity) and Keith Olbermann (@KeithOlbermann) were chosen to represent the right and left, respectively.  
+
+Based on these five choices, I hypothesize that since CNN and Fox News are biased towards the left and the right, respectively, there will be a difference in sentiment and common words used in tweets during the height of the 2020 election season. However, because traditional media outlets must maintain a certain level of professionalism despite political leanings, there will be an even clearer split between popular (or hated) political commentators of the left and the right. 
+
+## Data Collection
+
+Once the five Twitter users were decided on, the tweets from these users needed to be compiled into a dataset. Python was used for the process of collecting the tweets and building the dataset into .csv files to be imported into R for the rest of the analysis. I used the [**snscrape package**](https://github.com/JustAnotherArchivist/snscrape) available in Python to scrape the tweets from the five users and export the results into separate .csv files. When scraping the tweets, I gathered the date and time of the tweet, the Tweet ID, the content of the tweet, and the username (for future reference). 
+
+All of the tweets for all five users were compiled from anytime between September 1st, 2020 through January 20th, 2021, which, as I explained earlier, deem to be the height of the 2020 election. Every tweet from each user was used in this analysis though, whether or not each tweet actually dealt directly with political or election content. This was a deliberate choice in order to examine the overall Twitter conversation and the patterns that occurred during a politically charged time period. Ultimately, the final sample sizes are shown below, with the total sample size across all five users being 89,706 tweets.
+
+
+#### *Table 1:* Tweet Sample Sizes by User
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+n_CNN <- 14595
+n_Fox <- 2765
+n_Reuters <- 61510
+n_Hannity <- 2961
+n_Olbermann <- 7875
+
+n_sum <- sum(n_CNN, n_Fox, n_Reuters, n_Hannity, n_Olbermann)
+
+sample <- matrix(c(n_CNN,n_Fox,n_Reuters,n_Hannity,n_Olbermann,n_sum),ncol = 6,byrow = TRUE)
+colnames(sample) <- c("CNN","Fox News","Reuters","Sean Hannity", "Keith Olbermann", "Total")
+rownames(sample) <- "User"
+sample <- as.table(sample)
+sample
+
+```
+
+## Data Cleaning and Text Mining Analysis
+
+There were two main parts of the analysis to this project, with the first being simple text mining to examine the users’ most frequent words both graphically and in word clouds, as well as test if there were any correlations between the frequently used words and any other words that they included in their tweets. In order to conduct this analysis, the data first needed to be cleaned. Once the text of each specific user’s tweets was loaded in as a corpus, any symbols were replaced with spaces, the text was converted to lowercase, numbers were removed as well as common English stop words, punctuations, extra white space, and any necessary custom stop words. Finally, the words were trimmed down into their root form. The SnowballC and tm packages in R were used to clean the content of the tweets for this portion of the analysis (Bouchet-Valat 2020; Feinerer and Hornik 2020), and the wordcloud and RColorBrewer packages were used to help construct the visualizations used (Fellows 2018; Neuwirth 2014). 
+
+The second part of this project involved conducting a sentiment analysis and an ANOVA test, building a Shiny app for sentiment analysis comparison, and graphing the proportion of the common emotions associated with the words in each user’s tweets. To get the sentiment scores, emotions data frame, clean the data, and build the Shiny app, the quanteda, shiny, lubridate, syuzhet, stringr, and tidyverse packages in R were used (Benoit et al. 2018; Chang et al. 2020; Grolemund and Wickham 2011; Jockers 2015; Wickham 2019; Wickham et al. 2019). 
+
+```{r, include=FALSE}
+################### CNN
+library(tidyverse)
+library(tm)
+library(SnowballC)
+library(wordcloud)
+library(RColorBrewer)
+library(syuzhet)
+         
+CNN_df <- read_csv(file = 'CNN_tweets.csv')$Text
+
+CNN_df1 <- read.csv(file = "CNN_tweets.csv")[,c(1,3)]
+
+# Load the data as a corpus
+CNN_text <- Corpus(VectorSource(CNN_df))
+
+################## Cleaning ##############################################
+# Replacing "/", "@" and "|" with space
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+CNN_text <- tm_map(CNN_text, toSpace, "/")
+CNN_text <- tm_map(CNN_text, toSpace, "@")
+CNN_text <- tm_map(CNN_text, toSpace, "\\|")
+CNN_text <- tm_map(CNN_text, toSpace, "-")
+
+# Convert the text to lower case
+CNN_text <- tm_map(CNN_text, content_transformer(tolower))
+
+# Remove numbers
+CNN_text <- tm_map(CNN_text, removeNumbers)
+
+# Remove english common stopwords
+CNN_text <- tm_map(CNN_text, removeWords, stopwords("english"))
+
+# Remove punctuations
+CNN_text <- tm_map(CNN_text, removePunctuation)
+
+# Eliminate extra white spaces
+CNN_text <- tm_map(CNN_text, stripWhitespace)
+
+# Text stemming - which reduces words to their root form
+CNN_text <- tm_map(CNN_text, stemDocument)
+
+# specify your custom stopwords as a character vector
+CNN_text <- tm_map(CNN_text, removeWords, c("https", "cnn", "tco"))
+
+######################### Analysis ########################################
+# Build a term-document matrix
+CNN_text_dtm <- TermDocumentMatrix(CNN_text)
+dtm_m_CNN <- as.matrix(CNN_text_dtm)
+
+# Sort by descreasing value of frequency
+dtm_v_CNN <- sort(rowSums(dtm_m_CNN),decreasing=TRUE)
+dtm_d_CNN <- data.frame(word = names(dtm_v_CNN),freq=dtm_v_CNN)
+
+
+############### Fox News
+df <- read_csv(file = 'FoxNews_tweets.csv')$Text
+
+df1 <- read.csv(file = "FoxNews_tweets.csv")[,c(1,3)]
+
+# Load the data as a corpus
+text <- Corpus(VectorSource(df))
+
+################## Cleaning ##############################################
+# Replacing "/", "@" and "|" with space
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+text <- tm_map(text, toSpace, "/")
+text <- tm_map(text, toSpace, "@")
+text <- tm_map(text, toSpace, "\\|")
+text <- tm_map(text, toSpace, "-")
+
+# Convert the text to lower case
+text <- tm_map(text, content_transformer(tolower))
+
+# Remove numbers
+text <- tm_map(text, removeNumbers)
+
+# Remove english common stopwords
+text <- tm_map(text, removeWords, stopwords("english"))
+
+# Remove punctuations
+text <- tm_map(text, removePunctuation)
+
+# Eliminate extra white spaces
+text <- tm_map(text, stripWhitespace)
+
+# Text stemming - which reduces words to their root form
+text <- tm_map(text, stemDocument)
+
+# specify your custom stopwords as a character vector
+text <- tm_map(text, removeWords, c("https", "tco"))
+
+######################### Analysis ########################################
+# Build a term-document matrix
+text_dtm <- TermDocumentMatrix(text)
+dtm_m <- as.matrix(text_dtm)
+
+# Sort by descreasing value of frequency
+dtm_v <- sort(rowSums(dtm_m),decreasing=TRUE)
+dtm_d <- data.frame(word = names(dtm_v),freq=dtm_v)
+
+
+################### Reuters
+rdf <- read_csv(file = 'Reuters_tweets.csv')$Text
+
+rdf1 <- read.csv(file = "Reuters_tweets.csv")[,c(1,3)]
+
+# Load the data as a corpus
+rtext <- Corpus(VectorSource(rdf))
+
+################## Cleaning ##############################################
+# Replacing "/", "@" and "|" with space
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+rtext <- tm_map(rtext, toSpace, "/")
+rtext <- tm_map(rtext, toSpace, "@")
+rtext <- tm_map(rtext, toSpace, "\\|")
+rtext <- tm_map(rtext, toSpace, "-")
+
+# Convert the text to lower case
+rtext <- tm_map(rtext, content_transformer(tolower))
+
+# Remove numbers
+rtext <- tm_map(rtext, removeNumbers)
+
+# Remove english common stopwords
+rtext <- tm_map(rtext, removeWords, stopwords("english"))
+
+# Remove punctuations
+rtext <- tm_map(rtext, removePunctuation)
+
+# Eliminate extra white spaces
+rtext <- tm_map(rtext, stripWhitespace)
+
+# Text stemming - which reduces words to their root form
+rtext <- tm_map(rtext, stemDocument)
+
+# specify your custom stopwords as a character vector
+rtext <- tm_map(rtext, removeWords, c("https", "tco"))
+
+######################### Analysis ########################################
+# Build a term-document matrix
+rtext_dtm <- TermDocumentMatrix(rtext)
+
+bar_plot_top_words <- function(dff, top_number=10)
+{
+  library(quanteda)
+  myCorpus <- corpus(dff)
+  DFM <- dfm(myCorpus,tolower=TRUE,
+             remove=c(stopwords(),",",".","-","\"","'","(",")",";",":","!","$","?",""))
+  
+  textFreq <- textstat_frequency(DFM)
+  top_word <- textFreq[1:top_number,]
+  barplot(height=top_word$frequency,
+          names.arg=top_word$feature, las=2,
+          main="Reuters Top 10 Most Frequent Words",
+          col = "lightblue")
+}
+
+word_cloud2 <- function(dff, min_frequency=100)
+{
+  library(quanteda)
+  myCorpus <- corpus(dff)
+  DFM <- dfm(myCorpus,tolower=TRUE,
+             remove=c(stopwords(),",",".","-","\"","'","(",")",";",":","!","$","?",""))
+  DFM1 <- DFM %>%
+    dfm_trim(min_termfreq = min_frequency)
+  
+  # basic wordcloud
+  textplot_wordcloud(DFM1)
+}
+
+
+############## Sean Hannity
+sdf <- read_csv(file = 'seanhannity_tweets.csv')$Text
+
+sdf1 <- read.csv(file = "seanhannity_tweets.csv")[,c(1,3)]
+
+# Load the data as a corpus
+stext <- Corpus(VectorSource(sdf))
+
+################## Cleaning ##############################################
+# Replacing "/", "@" and "|" with space
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+stext <- tm_map(stext, toSpace, "/")
+stext <- tm_map(stext, toSpace, "@")
+stext <- tm_map(stext, toSpace, "\\|")
+stext <- tm_map(stext, toSpace, "-")
+stext <- tm_map(stext, toSpace, "'")
+stext <- tm_map(stext, toSpace, "'s")
+
+# Convert the text to lower case
+stext <- tm_map(stext, content_transformer(tolower))
+
+# Remove numbers
+stext <- tm_map(stext, removeNumbers)
+
+# Remove english common stopwords
+stext <- tm_map(stext, removeWords, stopwords("english"))
+
+# Remove punctuations
+stext <- tm_map(stext, removePunctuation)
+
+# Eliminate extra white spaces
+stext <- tm_map(stext, stripWhitespace)
+
+# Text stemming - which reduces words to their root form
+stext <- tm_map(stext, stemDocument)
+
+# specify your custom stopwords as a character vector
+stext <- tm_map(stext, removeWords, c("https", "tco","'"))
+# issue with removing symbol
+
+######################### Analysis ########################################
+# Build a term-document matrix
+stext_dtm <- TermDocumentMatrix(stext)
+sdtm_m <- as.matrix(stext_dtm)
+
+# Sort by descreasing value of frequency
+sdtm_v <- sort(rowSums(sdtm_m),decreasing=TRUE)
+sdtm_d <- data.frame(word = names(sdtm_v),freq=sdtm_v)
+
+
+############## Keith Olbermann
+kdf <- read_csv(file = 'KeithOlbermann_tweets.csv')$Text
+
+kdf1 <- read.csv(file = "KeithOlbermann_tweets.csv")[,c(1,3)]
+
+# Load the data as a corpus
+ktext <- Corpus(VectorSource(kdf))
+
+################## Cleaning ##############################################
+# Replacing "/", "@" and "|" with space
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+ktext <- tm_map(ktext, toSpace, "/")
+ktext <- tm_map(ktext, toSpace, "@")
+ktext <- tm_map(ktext, toSpace, "\\|")
+ktext <- tm_map(ktext, toSpace, "-")
+ktext <- tm_map(ktext, toSpace, "'s")
+
+# Convert the text to lower case
+ktext <- tm_map(ktext, content_transformer(tolower))
+
+# Remove numbers
+ktext <- tm_map(ktext, removeNumbers)
+
+# Remove english common stopwords
+ktext <- tm_map(ktext, removeWords, stopwords("english"))
+
+# Remove punctuations
+ktext <- tm_map(ktext, removePunctuation)
+
+# Eliminate extra white spaces
+ktext <- tm_map(ktext, stripWhitespace)
+
+# Text stemming - which reduces words to their root form
+ktext <- tm_map(ktext, stemDocument)
+
+# specify your custom stopwords as a character vector
+ktext <- tm_map(ktext, removeWords, c("https", "tco"))
+
+######################### Analysis ########################################
+# Build a term-document matrix
+ktext_dtm <- TermDocumentMatrix(ktext)
+kdtm_m <- as.matrix(ktext_dtm)
+
+# Sort by descreasing value of frequency
+kdtm_v <- sort(rowSums(kdtm_m),decreasing=TRUE)
+kdtm_d <- data.frame(word = names(kdtm_v),freq=kdtm_v)
+
+```
+
+# **Results and Analysis**
+
+The majority of the analysis in this paper is demonstrated through visualizations so that the everyday reader can graphically and visually see these differences among the various users during the height of the election season. Each section of the analysis will include the respective visualizations, and then a short discussion will accompany that section. Overall, these results very much demonstrate the key areas of the Twitter conversation during this time, as well as some of the partisan differences.
+
+## Frequently Used Words by User
+
+Regardless of the overall sample size for each Twitter user in this study, each had their own most commonly used words. Figure 1 immediately below shows the frequency counts for the top ten words for each of the five users during the stated time period. 
+
+#### *Figure 1:* Top 10 Words for Each Twitter User
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+
+barplot(dtm_d_CNN[1:10,]$freq, las = 2, names.arg = dtm_d_CNN[1:10,]$word,
+        col ="lightblue", main ="CNN Top 10 Most Frequent Words",
+        ylab = "Word Frequencies") 
+
+barplot(dtm_d[1:10,]$freq, las = 2, names.arg = dtm_d[1:10,]$word,
+        col ="lightblue", main ="Fox News Top 10 Most Frequent Words",
+        ylab = "Word Frequencies") 
+
+bar_plot_top_words(rdf)
+
+barplot(sdtm_d[c(1,2,3,4,5,6,7,8,9,11),]$freq, las = 2, names.arg = sdtm_d[c(1,2,3,4,5,6,7,8,9,11),]$word,
+        col ="lightblue", main ="Sean Hannity's Top 10 Most Frequent Words",
+        ylab = "Word Frequencies") 
+
+barplot(kdtm_d[1:10,]$freq, las = 2, names.arg = kdtm_d[1:10,]$word,
+        col ="lightblue", main ="Keith Olbermann's Top 10 Most Frequent Words",
+        ylab = "Word Frequencies") 
+
+```
+
+Starting with the CNN, Fox News, and Reuters, each of them had a different top word, with CNN’s being the root word “presid” (president, presidency, etc.), Fox News’ being “trump”, and Reuters’ being “u.s.”. Going on down through the rest of the bar charts, there are some common words between the three sources. All three sources mention Donald Trump and words related to the coronavirus, but there are also some key differences. Fox News was the only source of the three to have “vote” as one of their top ten words, and Reuters was the only source to not have the root word “elect” show up as one of their top ten words. 
+
+To turn to the two political commentators, Sean Hannity and Keith Olbermann, Hannity’s top words align fairly well with Fox News’ top words, but Keith Olbermann’s top words show a different story. Unlike the other four Twitter users, Olbermann mentions his top word, “trump”, more than twice the number of times as his second most popular word. This clearly demonstrates that Donald Trump has dominated the vast majority of the tweets that Olbermann has posted during this time period, whether it is a positive, negative, or neutral tweet. 
+
+Next, to go beyond just looking at these users' top words, word clouds of each user’s frequent words were also constructed. The minimum frequency threshold value for being included in the word clouds do vary because of the significant variation in the sample size of tweets available for the five users. For CNN, Reuters, and Olbermann, the minimum frequency was 100 uses of a word, with Fox News and Hannity at 20 uses of a word. Each word cloud is also color coded by frequency, with the exception of Reuters due to the large sample size. Figures 2-6 show the word clouds below.
+
+#### *Figure 2:* CNN Word Cloud
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+set.seed(1234)
+
+wordcloud(words = dtm_d_CNN$word, freq = dtm_d_CNN$freq, min.freq = 100,
+          scale = c(4,0.5), max.words=150, random.order=FALSE, rot.per=0.40, 
+          colors=brewer.pal(8, "Dark2"))
+```
+
+#### *Figure 3:* Fox News Word Cloud
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+set.seed(1234)
+
+wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 20,
+          scale = c(4,0.5), max.words=150, random.order=FALSE, rot.per=0.40, 
+          colors=brewer.pal(8, "Dark2"))
+```
+
+#### *Figure 4:* Reuters Word Cloud
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+set.seed(1234)
+
+word_cloud2(rdf)
+```
+
+#### *Figure 5:* Sean Hannity's Word Cloud
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+set.seed(1234)
+
+wordcloud(words = sdtm_d$word, freq = sdtm_d$freq, min.freq = 20,
+          scale = c(4,0.5), max.words=150, random.order=FALSE, rot.per=0.40, 
+          colors=brewer.pal(8, "Dark2"))
+```
+
+#### *Figure 6:* Keith Olbermann's Word Cloud
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+set.seed(1234)
+
+wordcloud(words = kdtm_d$word, freq = kdtm_d$freq, min.freq = 100,
+          scale = c(4,0.5), max.words=150, random.order=FALSE, rot.per=0.40, 
+          colors=brewer.pal(8, "Dark2"))
+```
+
+Looking at the word clouds, many of the same patterns that were discussed about the bar plots are also seen again here, just in a different format. Overall, the topic of most of the tweets posted by these users have to deal with either the election, the candidates in the election, other prominent government figures, and the coronavirus pandemic, all of which are to be expected, especially in such a politically charged time period. The word clouds also better visually demonstrate the dominance of the word “trump” in Olbermann’s tweets as compared to the different color coding of popular words across the various word clouds. 
+
+To briefly compare this to the word clouds from Donald Trump’s tweets, some of the same common words do appear, specifically the root word “presid”, “country”, and “America(n)”, but Trump’s top word, “great” did not make the cut (Maksimava 2019). However, Maksimava (2019) does state that “great” is likely Trump’s “favorite adjective” based on how often he uses it to describe various things in his tweets (job numbers, North Korea’s economic potential, Senators, etc.). This clearly does not hold true for the five Twitter users studied here. In addition, Maksimava’s (2019) analysis only dates up to January 2019 at the latest, so that could be an important reason for there not being as many similarities between the different users here, especially since her analysis was prior to the pandemic.
+
+## Frequent Words Correlation Analysis
+
+In addition to examining the word clouds, a correlation analysis was run for each user’s most frequently used words. For each user’s top ten words, a correlation analysis was conducted, and the results show any other words, or root words, from their tweets that were correlated with a top ten word at or above the 0.25 level. The resulting output is shown below in Tables 2-6. 
+
+#### *Table 2:* CNN Frequent Word Correlations
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+findAssocs(CNN_text_dtm, terms = c("presid","trump","covid",
+                                   "new","elect","year",
+                                   "biden","state"), corlimit = 0.25)
+```
+
+#### *Table 3:* Fox News Frequent Word Correlations
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+findAssocs(text_dtm, terms = c("trump","biden","elect",
+                               "senat","vote","state"), 
+           corlimit = 0.25)
+```
+
+#### *Table 4:* Reuters Frequent Word Correlations
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+findAssocs(rtext_dtm, terms = c('new',"coronavirus",
+                               "presid","trump"), 
+           corlimit = 0.25)
+```
+
+#### *Table 5:* Sean Hannity Frequent Word Correlations
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+findAssocs(stext_dtm, terms = c("biden","covid","new"), 
+           corlimit = 0.25)
+```
+
+#### *Table 6:* Keith Olbermann Frequent Word Correlations
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+findAssocs(ktext_dtm, terms = c("trump","new","video","coup","full",
+                               "just","will","biden","pleas","version"), 
+           corlimit = 0.25)
+```
+
+To begin, there are some notable differences between the left-leaning and right-leaning news sources: CNN and Fox News. The top root word for CNN, “presid” is reasonably correlated with “joe” and “vice”, with the former most likely referring to “President Joe” Biden, and the latter referring to “Vice President”. However, it is interesting that the words “donald” or “trump” are not correlated with “presid” even though Donald Trump was still president during this time. The other correlation to note for CNN here is the 0.33 correlation between “elect” and “joe”, which could refer to “elect Joe” Biden, or even President “Elect Joe” Biden. Either way, the correlations from CNN do differ from the pattern seen from Fox News.
+
+Looking at Table 3, the exact opposite happens with Fox News, in which their top word “trump” is correlated with “presid”, but “biden” is not. Given that Joe Biden ran for the Democratic party and Trump ran for the Republican party, it is interesting to see this partisan preference reflected in word-for-word correlations. It appears as if CNN does not often refer to Donald Trump as President Donald Trump, and Fox News does not often refer to Joe Biden as President-Elect Joe Biden or even former Vice President Joe Biden. 
+
+Furthermore, the other correlations amongst top words for Fox News tell a different story than CNN, where CNN seems to talk more about New York and the COVID vaccine, and Fox News speaks more of the election results, the senate runoff races in Georgia, vote counting, and battleground states in the election. This could again be showing partisan preferences in the granular level, based on what viewers of these news stations want to hear about, and what news anchors and executives on these stations want to talk about, even on Twitter. 
+
+Reuters, the neutral news source in this comparison, showcases aspects of both CNN and Fox News in their frequent word correlations. The two themes from Reuters are very clearly New York and the pandemic, and the 2020 election. The key difference here is that the root word “presid” is correlated with both “joe” and “donald”, although “donald” is at a lesser extent. Either way, Reuters was the only news source who used the phrases “President Joe” and “President Donald” of a similar frequency during this time period.
+
+Lastly, to turn to the two political commentators, once again, there are different correlations. There were not many correlations at or above the 0.25 level for Sean Hannity, but those that did primarily concerned the coronavirus pandemic, but also Joe and his son Hunter Biden. Keith Olbermann on the other hand had more correlations above the 0.25 level than any other Twitter user. However, most of these correlations did not deal with the 2020 election, or at least not directly. It appears that Olbermann frequently tweets about YouTube video releases, conspiracy theories and coups, and the coronavirus. In comparison to all of the other users though, it is clear through these correlations that Olbermann uses different language in his tweets than what you would often see from the news organizations’ Twitter accounts, or even Hannity. This helps verify the second part of my hypothesis, in which there will be clear differences between news organizations and political commentators’ presence on Twitter based on the expectations for professionalism.
+
+## Emotions Analysis
+
+After looking at the correlations, the syuzhet package in R was used to classify meaningful words in a user’s tweets as one of the eight main emotions: anger, anticipation, disgust, fear, joy, sadness, surprise, and trust using an NRC dictionary (Jockers 2015). For each of the five users, a data frame was created to classify each of the words in each tweet with an emotion. Then, the totals for each emotion were summed up and were graphed in the various visualizations seen below in Figure 7. The graphs are expressed as a proportion of the total meaningful words in each data frame as to control for the differences in sample sizes between the users so that the comparisons would be more meaningful.
+
+#### *Figure 7:* Emotions Analysis Comparison
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+################### CNN
+CNN_emotion <- get_nrc_sentiment(CNN_df)
+
+anger <- sum(CNN_emotion$anger)
+anticipation <- sum(CNN_emotion$anticipation)
+disgust <- sum(CNN_emotion$disgust)
+fear <- sum(CNN_emotion$fear)
+joy <- sum(CNN_emotion$joy)
+sadness <- sum(CNN_emotion$sadness)
+surprise <- sum(CNN_emotion$surprise)
+trust <- sum(CNN_emotion$trust)
+negative <- sum(CNN_emotion$negative)
+positive <- sum(CNN_emotion$positive)
+
+CNN_sum <- c(anger,anticipation,disgust,fear,joy,sadness,surprise,trust)
+Emotions <- c("Anger","Anticipation","Disgust","Fear","Joy","Sadness","Surprise","Trust")
+Emotions <- factor(Emotions)
+CNN_emotion_tibble <- tibble(CNN_sum)
+
+row.names(CNN_emotion_tibble) <- t(Emotions)
+
+CNN_emotion_tibble %>% 
+  ggplot() + geom_col(mapping = aes(x= reorder(Emotions,CNN_sum),
+                                    y=prop.table(CNN_sum),fill=Emotions)) +
+  ylab("Percentage of Meaningful Words") + xlab("Emotions") + 
+  ggtitle("CNN Twitter Account: Percentage of Meaningful Words by Emotion") + 
+  coord_flip()
+
+
+#################### Fox
+emotiondf <- get_nrc_sentiment(df)
+
+anger <- sum(emotiondf$anger)
+anticipation <- sum(emotiondf$anticipation)
+disgust <- sum(emotiondf$disgust)
+fear <- sum(emotiondf$fear)
+joy <- sum(emotiondf$joy)
+sadness <- sum(emotiondf$sadness)
+surprise <- sum(emotiondf$surprise)
+trust <- sum(emotiondf$trust)
+negative <- sum(emotiondf$negative)
+positive <- sum(emotiondf$positive)
+
+sum <- c(anger,anticipation,disgust,fear,joy,sadness,surprise,trust)
+Emotions <- c("Anger","Anticipation","Disgust","Fear","Joy","Sadness","Surprise","Trust")
+Emotions <- factor(Emotions)
+emotion_tibble <- tibble(sum)
+
+row.names(emotion_tibble) <- t(Emotions)
+
+emotion_tibble %>% 
+  ggplot() + geom_col(mapping = aes(x= reorder(Emotions,sum),
+                                    y=prop.table(sum),fill=Emotions)) +
+  ylab("Percentage of Meaningful Words") + xlab("Emotions") + 
+  ggtitle("Fox News Twitter Account: Percentage of Meaningful Words by Emotion") + 
+  coord_flip()
+
+
+############ Reuters
+remotiondf <- get_nrc_sentiment(rdf)
+
+ranger <- sum(remotiondf$anger)
+ranticipation <- sum(remotiondf$anticipation)
+rdisgust <- sum(remotiondf$disgust)
+rfear <- sum(remotiondf$fear)
+rjoy <- sum(remotiondf$joy)
+rsadness <- sum(remotiondf$sadness)
+rsurprise <- sum(remotiondf$surprise)
+rtrust <- sum(remotiondf$trust)
+rnegative <- sum(remotiondf$negative)
+rpositive <- sum(remotiondf$positive)
+
+rsum <- c(ranger,ranticipation,rdisgust,rfear,rjoy,rsadness,rsurprise,rtrust)
+remotion_tibble <- tibble(rsum)
+
+row.names(remotion_tibble) <- t(Emotions)
+
+remotion_tibble %>% 
+  ggplot() + geom_col(mapping = aes(x= reorder(Emotions,rsum),
+                                    y=prop.table(rsum),fill=Emotions)) +
+  ylab("Percentage of Meaningful Words") + xlab("Emotions") + 
+  ggtitle("Reuters Twitter Account: Percentage of Meaningful Words by Emotion") + 
+  coord_flip()
+
+
+################# Hannity
+semotiondf <- get_nrc_sentiment(sdf)
+
+sanger <- sum(semotiondf$anger)
+santicipation <- sum(semotiondf$anticipation)
+sdisgust <- sum(semotiondf$disgust)
+sfear <- sum(semotiondf$fear)
+sjoy <- sum(semotiondf$joy)
+ssadness <- sum(semotiondf$sadness)
+ssurprise <- sum(semotiondf$surprise)
+strust <- sum(semotiondf$trust)
+snegative <- sum(semotiondf$negative)
+spositive <- sum(semotiondf$positive)
+
+ssum <- c(sanger,santicipation,sdisgust,sfear,sjoy,ssadness,ssurprise,strust)
+semotion_tibble <- tibble(ssum)
+
+row.names(semotion_tibble) <- t(Emotions)
+
+semotion_tibble %>% 
+  ggplot() + geom_col(mapping = aes(x= reorder(Emotions,ssum),
+                                    y=prop.table(ssum),fill=Emotions)) +
+  ylab("Percentage of Meaningful Words") + xlab("Emotions") + 
+  ggtitle("Sean Hannity's Twitter: Percentage of Meaningful Words by Emotion") + 
+  coord_flip()
+
+
+############### Olbermann
+kemotiondf <- get_nrc_sentiment(kdf)
+
+kanger <- sum(kemotiondf$anger)
+kanticipation <- sum(kemotiondf$anticipation)
+kdisgust <- sum(kemotiondf$disgust)
+kfear <- sum(kemotiondf$fear)
+kjoy <- sum(kemotiondf$joy)
+ksadness <- sum(kemotiondf$sadness)
+ksurprise <- sum(kemotiondf$surprise)
+ktrust <- sum(kemotiondf$trust)
+knegative <- sum(kemotiondf$negative)
+kpositive <- sum(kemotiondf$positive)
+
+ksum <- c(kanger,kanticipation,kdisgust,kfear,kjoy,ksadness,ksurprise,ktrust)
+kemotion_tibble <- tibble(ksum)
+
+row.names(kemotion_tibble) <- t(Emotions)
+
+kemotion_tibble %>% 
+  ggplot() + geom_col(mapping = aes(x= reorder(Emotions,ksum),
+                                    y=prop.table(ksum),fill=Emotions)) +
+  ylab("Percentage of Meaningful Words") + xlab("Emotions") + 
+  ggtitle("Keith Olbermann's Twitter: Percentage of Meaningful Words by Emotion") + 
+  coord_flip()
+```
+
+Looking at all five users across the board, words associated with trust were primarily used in these tweets, with these words dominating around 20 percent of each user’s meaningful words. This is a logical thing to see across all five users because any organization or individual who wants a following for the content that they put out, especially political content, wants and needs to demonstrate feelings of trust to reaffirm their consumers that their content is accurate. What is interesting though is that for all of the users, the next emotion to follow trust is fear. This could be numerous things, including fear that the opposing side could win the election. Unfortunately, there is no way to confirm exactly what each user is fearful of in their tweets when using this type of aggregating method. 
+
+The other interesting aspect of this analysis is how, once again, the visualizations here very clearly show the difference between Keith Olbermann and the other five users. The emotions associated with Olbermann’s tweets are much closer in proportion than any other users, meaning that Olbermann sends tweets with a variety of emotions, which is much different than CNN or Reuters for example, who by in far, communicate with words associated with trust much more than anything else. The final portion of this analysis of the five Twitter users during the 2020 election is a sentiment analysis, which also uses the syuzhet package (Jockers 2015).
+
+## Sentiment Analysis
+
+The purpose of the sentiment analysis was to look at the average sentiment of each user’s tweets over time to examine any similarities and differences. To visualize these changes in sentiment, I developed a Shiny application using the data (Chang et al. 2020). The Shiny application can be accessed [**here**]( https://kaitlynfales421.shinyapps.io/Election2020_Twitter_Sentiment/). The first tab on the navigation panel allows the user to view any particular Twitter user’s average sentiment scores at any point in time from September 1st, 2020 to January 20th, 2021. If multiple Twitter users are selected, the resulting graph is the average across all of the users selected. The second tab on the navigation panel allows the user to compare any two of the five users, with different colored lines to represent the selected users. The second tab also allows for the ability to toggle the time period just like in the first tab. The Shiny application lends itself well to an interactive visualization of the data collected for this study, but also shows some important insights.
+
+When viewing each user individually, there are some important differences to note. CNN stayed pretty neutral throughout September and October (relative highs and lows), with almost strictly positive sentiment in November and December, and a negative start to January 2021. This pattern aligns with Joe Biden’s election in November, as well as the attacks on the capitol in January. However, Fox News told a slightly different story, as the sentiment from Fox’s tweets throughout the entire time period was very rarely positive. As for Reuters, their Twitter sentiment followed a similar pattern to CNN, but with much less variability, which again goes to show their neutrality. For the political commentators, both Sean Hannity and Keith Olbermann shows a good amount of variability in their average sentiment scores, but Hannity’s variability was still mostly negative, and Olbermann was very rarely neutral, with the sentiment of his tweets mostly at one extreme or the other. Olbermann also would not tweet consistently, which is why there are so many breaks throughout the graph. 
+
+After examining the sentiment graphs, I then hypothesized that there were statistically significant differences in the average sentiment between these five Twitter users. Therefore, I ran a one-way ANOVA test with Tukey multiple comparisons to test this hypothesis. I found that there was a statistically significant difference with an overall p-value of less than 0.0001. To examine the more specific differences, I ran a Tukey multiple comparison, and found that the only two pairs of users that were not significantly different from one another were CNN and Reuters, and Fox News and Sean Hannity, using a significance level of 0.01. Therefore, based on the mean levels of sentiment, CNN and Reuters were the only two sources that had an overall neutral sentiment, with average scores of 0.0490 and 0.0345, respectively. This also means that Fox News and Sean Hannity’s sentiment scores were both similarly negative with Keith Olbermann having the most negative sentiment in his tweets at an average of -0.403. The results from the ANOVA and Tukey multiple comparison can be found below. Overall, this analysis implies that CNN and Reuters had the most neutral sentiment in their tweets, which signifies that they are the closest sources (within this sample) of neutral, non-biased news reporting. 
+
+#### *Table 7:* Average Sentiment by Twitter User
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+d <- read_csv('d.csv')
+
+d %>% 
+  group_by(Username) %>% 
+  summarise(avg_sentiment = mean(Sentiment))
+```
+
+#### *Table 8:* One-Way ANOVA Results
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+anova <- aov(Sentiment ~ Username, data = d)
+summary(anova)
+```
+
+#### *Figure 8:* Tukey Multiple Comparison Results
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+tukey <- TukeyHSD(anova)
+
+par(mar = c(5, 9, 5, 2))
+plot(tukey,las = 1,cex.axis = 0.70)
+```
+
+# **Conclusion**
+
+Throughout this entire analysis, it is clear that there are differences between these five sources, and some of them could very likely be partisan differences. Unfortunately, since the majority of this study was conducted with the use of visualizations, it can be difficult to say that partisan polarization is the cause of these differences. However, there are granular, word-for-word differences in the words that are used, the emotions associated with tweets, and the average sentiment between these different Twitter users, and partisan polarization is involved in that simply based on the users chosen for this study. 
+
+On a larger scale, this research continues to shed a light on strictly fact reporting versus news analysis and building out a narrative. If all of these sources strictly reported the political news, there would not be any significant differences between sentiment scores, as all of the sources would be reporting the same news. This also carries over into the emotions analysis, and the correlations between words. Therefore, these significant differences should serve as a reminder that media bias is very much present regardless of where people obtain their news from, especially as more and more political news is present on social media. 
+
+This project has many possible future directions, with the most obvious being to expand this study and methodology to other news sources. In addition, while this research also compares news station Twitter accounts with political commentator Twitter accounts, there is much more to be said when just examining the differences within each of the two categories. And finally, the area of study that could add a lot of value to research like this is examining the rate of misinformation from these sources as well. There is much more research that can be and needs to be done in terms of political media and social media’s role in that, especially when people rely on information from these sources everyday to make decisions, and even as big of a decision as who they are going to vote for next. 
+
+# **References**
+
+Beck, Martin. “MartinBeckUT/TwitterScraper.” GitHub, December 3, 2020. https://github.com/MartinBeckUT/TwitterScraper/blob/master/snscrape/cli-with-python/snscrape-python-cli.ipynb. 
+
+Benoit K, Watanabe K, Wang H, Nulty P, Obeng A, Müller S, Matsuo A (2018). “quanteda: An R package for the quantitative analysis of textual data.” _Journal of Open Source Software_, *3*(30), 774. doi: 10.21105/joss.00774 (URL: https://doi.org/10.21105/joss.00774), <URL: https://quanteda.io>.
+
+Bouchet-Valat, Milan (2020). SnowballC: Snowball Stemmers Based on the C 'libstemmer' UTF-8 Library. R package version 0.7.0. https://CRAN.R-project.org/package=SnowballC
+
+Winston Chang, Joe Cheng, JJ Allaire, Yihui Xie and Jonathan McPherson (2020). shiny: Web Application Framework for R. R package version 1.5.0. https://CRAN.R-project.org/package=shiny 
+
+“Fake News, Propaganda, and Disinformation: Learning to Critically Evaluate Media Sources: Seeing Our Biases.” Cornell University Library, 2021. https://guides.library.cornell.edu/evaluate_news/bias.  
+
+Feinerer, Ingo and Kurt Hornik (2020). tm: Text Mining Package. R package version 0.7-8. https://CRAN.R-project.org/package=tm
+
+Fellows, Ian (2018). wordcloud: Word Clouds. R package version 2.6. https://CRAN.R-project.org/package=wordcloud
+
+Fox, Lauren. “The Top 10 Most Hated News Commentators.” U.S. News & World Report. U.S. News & World Report, September 13, 2011. https://www.usnews.com/news/washington-whispers/slideshows/top-10-most-hated-news-commentators?slide=6.
+
+Garrett Grolemund, Hadley Wickham (2011). Dates and Times Made Easy with lubridate. Journal of Statistical Software, 40(3), 1-25. URL http://www.jstatsoft.org/v40/i03/.
+
+"How Social Media Is Shaping Political Campaigns" Knowledge@Wharton, August 17, 2020, accessed May 15, 2021. https://knowledge.wharton.upenn.edu/article/how-social-media-is-shaping-political-campaigns/
+
+“Infographic: Most People Worried About News Bias for Others.” Statista Infographics, September 16, 2020. https://www.statista.com/chart/22936/media-bias-among-voters/.
+
+Jockers ML (2015). _Syuzhet: Extract Sentiment and Plot Arcs from Text_. <URL: https://github.com/mjockers/syuzhet>.
+
+Jurkowitz, Mark, Amy Mitchell, Elisa Shearer, and Mason Walker. “U.S. Media Polarization and the 2020 Election: A Nation Divided.” Pew Research Center's Journalism Project, January 24, 2020. https://www.journalism.org/2020/01/24/u-s-media-polarization-and-the-2020-election-a-nation-divided/.
+
+Keating, Avril, and Gabriella Melis. “Social Media and Youth Political Engagement: Preaching to the Converted or Providing a New Voice for Youth?” The British Journal of Politics and International Relations 19, no. 4 (2017): 877–94. https://doi.org/10.1177/1369148117718461.  
+
+Kever, Jeannie. “Voters Rely on Mainstream Media Despite Concerns about Bias.” University of Houston, November 2, 2020. https://uh.edu/news-events/stories/2020/november-2020/11022020hobby-media-bias.php.  
+Maksimava, Masha. “Analyzing Trump's Twitter: Top Themes from 36K Tweets.” Awario Blog. Awario, February 10, 2019. https://awario.com/blog/trump-twitter-analysis/.
+
+“Media Bias Chart.” Ad Fontes Media. Accessed May 15, 2021. https://www.adfontesmedia.com/interactive-media-bias-chart/.
+
+Mhatre, Sanil. “Text Mining and Sentiment Analysis: Analysis with R.” Simple Talk. Simple Talk, May 13, 2020. https://www.red-gate.com/simple-talk/sql/bi/text-mining-and-sentiment-analysis-with-r/.
+
+Neuwirth, Erich (2014). RColorBrewer: ColorBrewer Palettes. R package version 1.1-2. https://CRAN.R-project.org/package=RColorBrewer 
+
+Nott, Lata. “Political Advertising on Social Media Platforms.” American Bar Association, June 26, 2020. https://www.americanbar.org/groups/crsj/publications/human_rights_magazine_home/voting-in-2020/political-advertising-on-social-media-platforms/. 
+
+Owen, Diana. “The Past Decade and Future of Political Media: The Ascendance of Social Media.” OpenMind, 2019. https://www.bbvaopenmind.com/en/articles/the-past-decade-and-future-of-political-media-the-ascendance-of-social-media/.  
+
+Petrova, Maria and Sen, Ananya and Yildirim, Pinar, Social Media and Political Contributions: The Impact of New Technology on Political Competition (May 14, 2020). Management Science, forthcoming , Available at SSRN: https://ssrn.com/abstract=2836323 or http://dx.doi.org/10.2139/ssrn.2836323
+
+Pryor, J.J. “Who Is the Least Biased News Source? Simplifying the News Bias Chart.” Medium. Towards Data Science, September 9, 2020. https://towardsdatascience.com/how-statistically-biased-is-our-news-f28f0fab3cb3.
+
+R Core Team (2020). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
+
+Twitter Inc. “Permanent Suspension of @RealDonaldTrump.” Twitter, January 8, 2021. https://blog.twitter.com/en_us/topics/company/2020/suspension.html.  
+
+Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, https://doi.org/10.21105/joss.01686 
+
+Wickham, Hadley (2019). stringr: Simple, Consistent Wrappers for Common String Operations. R package version 1.4.0. https://CRAN.R-project.org/package=stringr 
+
+
+
+
+
