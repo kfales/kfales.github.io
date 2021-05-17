@@ -1,0 +1,779 @@
+---
+title: "Examining the Twitter Conversation Between CNN, Fox News, Reuters, Sean Hannity, and Keith Olbermann During the Height of the 2020 Election"
+author: "Kaitlyn Fales"
+date: "17 May 2021"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: yes
+      countIncrementalSlides: no
+  slidy_presentation: default
+---
+
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+```
+
+```{r, include=FALSE}
+################### CNN
+library(tidyverse)
+library(tm)
+library(SnowballC)
+library(wordcloud)
+library(RColorBrewer)
+library(syuzhet)
+         
+CNN_df <- read_csv(file = 'CNN_tweets.csv')$Text
+
+CNN_df1 <- read.csv(file = "CNN_tweets.csv")[,c(1,3)]
+
+# Load the data as a corpus
+CNN_text <- Corpus(VectorSource(CNN_df))
+
+################## Cleaning ##############################################
+# Replacing "/", "@" and "|" with space
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+CNN_text <- tm_map(CNN_text, toSpace, "/")
+CNN_text <- tm_map(CNN_text, toSpace, "@")
+CNN_text <- tm_map(CNN_text, toSpace, "\\|")
+CNN_text <- tm_map(CNN_text, toSpace, "-")
+
+# Convert the text to lower case
+CNN_text <- tm_map(CNN_text, content_transformer(tolower))
+
+# Remove numbers
+CNN_text <- tm_map(CNN_text, removeNumbers)
+
+# Remove english common stopwords
+CNN_text <- tm_map(CNN_text, removeWords, stopwords("english"))
+
+# Remove punctuations
+CNN_text <- tm_map(CNN_text, removePunctuation)
+
+# Eliminate extra white spaces
+CNN_text <- tm_map(CNN_text, stripWhitespace)
+
+# Text stemming - which reduces words to their root form
+CNN_text <- tm_map(CNN_text, stemDocument)
+
+# specify your custom stopwords as a character vector
+CNN_text <- tm_map(CNN_text, removeWords, c("https", "cnn", "tco"))
+
+######################### Analysis ########################################
+# Build a term-document matrix
+CNN_text_dtm <- TermDocumentMatrix(CNN_text)
+dtm_m_CNN <- as.matrix(CNN_text_dtm)
+
+# Sort by descreasing value of frequency
+dtm_v_CNN <- sort(rowSums(dtm_m_CNN),decreasing=TRUE)
+dtm_d_CNN <- data.frame(word = names(dtm_v_CNN),freq=dtm_v_CNN)
+
+
+############### Fox News
+df <- read_csv(file = 'FoxNews_tweets.csv')$Text
+
+df1 <- read.csv(file = "FoxNews_tweets.csv")[,c(1,3)]
+
+# Load the data as a corpus
+text <- Corpus(VectorSource(df))
+
+################## Cleaning ##############################################
+# Replacing "/", "@" and "|" with space
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+text <- tm_map(text, toSpace, "/")
+text <- tm_map(text, toSpace, "@")
+text <- tm_map(text, toSpace, "\\|")
+text <- tm_map(text, toSpace, "-")
+
+# Convert the text to lower case
+text <- tm_map(text, content_transformer(tolower))
+
+# Remove numbers
+text <- tm_map(text, removeNumbers)
+
+# Remove english common stopwords
+text <- tm_map(text, removeWords, stopwords("english"))
+
+# Remove punctuations
+text <- tm_map(text, removePunctuation)
+
+# Eliminate extra white spaces
+text <- tm_map(text, stripWhitespace)
+
+# Text stemming - which reduces words to their root form
+text <- tm_map(text, stemDocument)
+
+# specify your custom stopwords as a character vector
+text <- tm_map(text, removeWords, c("https", "tco"))
+
+######################### Analysis ########################################
+# Build a term-document matrix
+text_dtm <- TermDocumentMatrix(text)
+dtm_m <- as.matrix(text_dtm)
+
+# Sort by descreasing value of frequency
+dtm_v <- sort(rowSums(dtm_m),decreasing=TRUE)
+dtm_d <- data.frame(word = names(dtm_v),freq=dtm_v)
+
+
+################### Reuters
+rdf <- read_csv(file = 'Reuters_tweets.csv')$Text
+
+rdf1 <- read.csv(file = "Reuters_tweets.csv")[,c(1,3)]
+
+# Load the data as a corpus
+rtext <- Corpus(VectorSource(rdf))
+
+################## Cleaning ##############################################
+# Replacing "/", "@" and "|" with space
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+rtext <- tm_map(rtext, toSpace, "/")
+rtext <- tm_map(rtext, toSpace, "@")
+rtext <- tm_map(rtext, toSpace, "\\|")
+rtext <- tm_map(rtext, toSpace, "-")
+
+# Convert the text to lower case
+rtext <- tm_map(rtext, content_transformer(tolower))
+
+# Remove numbers
+rtext <- tm_map(rtext, removeNumbers)
+
+# Remove english common stopwords
+rtext <- tm_map(rtext, removeWords, stopwords("english"))
+
+# Remove punctuations
+rtext <- tm_map(rtext, removePunctuation)
+
+# Eliminate extra white spaces
+rtext <- tm_map(rtext, stripWhitespace)
+
+# Text stemming - which reduces words to their root form
+rtext <- tm_map(rtext, stemDocument)
+
+# specify your custom stopwords as a character vector
+rtext <- tm_map(rtext, removeWords, c("https", "tco"))
+
+######################### Analysis ########################################
+# Build a term-document matrix
+rtext_dtm <- TermDocumentMatrix(rtext)
+
+bar_plot_top_words <- function(dff, top_number=10)
+{
+  library(quanteda)
+  myCorpus <- corpus(dff)
+  DFM <- dfm(myCorpus,tolower=TRUE,
+             remove=c(stopwords(),",",".","-","\"","'","(",")",";",":","!","$","?",""))
+  
+  textFreq <- textstat_frequency(DFM)
+  top_word <- textFreq[1:top_number,]
+  barplot(height=top_word$frequency,
+          names.arg=top_word$feature, las=2,
+          main="Reuters Top 10 Most Frequent Words",
+          col = "lightblue")
+}
+
+word_cloud2 <- function(dff, min_frequency=100)
+{
+  library(quanteda)
+  myCorpus <- corpus(dff)
+  DFM <- dfm(myCorpus,tolower=TRUE,
+             remove=c(stopwords(),",",".","-","\"","'","(",")",";",":","!","$","?",""))
+  DFM1 <- DFM %>%
+    dfm_trim(min_termfreq = min_frequency)
+  
+  # basic wordcloud
+  textplot_wordcloud(DFM1)
+}
+
+
+############## Sean Hannity
+sdf <- read_csv(file = 'seanhannity_tweets.csv')$Text
+
+sdf1 <- read.csv(file = "seanhannity_tweets.csv")[,c(1,3)]
+
+# Load the data as a corpus
+stext <- Corpus(VectorSource(sdf))
+
+################## Cleaning ##############################################
+# Replacing "/", "@" and "|" with space
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+stext <- tm_map(stext, toSpace, "/")
+stext <- tm_map(stext, toSpace, "@")
+stext <- tm_map(stext, toSpace, "\\|")
+stext <- tm_map(stext, toSpace, "-")
+stext <- tm_map(stext, toSpace, "'")
+stext <- tm_map(stext, toSpace, "'s")
+
+# Convert the text to lower case
+stext <- tm_map(stext, content_transformer(tolower))
+
+# Remove numbers
+stext <- tm_map(stext, removeNumbers)
+
+# Remove english common stopwords
+stext <- tm_map(stext, removeWords, stopwords("english"))
+
+# Remove punctuations
+stext <- tm_map(stext, removePunctuation)
+
+# Eliminate extra white spaces
+stext <- tm_map(stext, stripWhitespace)
+
+# Text stemming - which reduces words to their root form
+stext <- tm_map(stext, stemDocument)
+
+# specify your custom stopwords as a character vector
+stext <- tm_map(stext, removeWords, c("https", "tco","'"))
+# issue with removing symbol
+
+######################### Analysis ########################################
+# Build a term-document matrix
+stext_dtm <- TermDocumentMatrix(stext)
+sdtm_m <- as.matrix(stext_dtm)
+
+# Sort by descreasing value of frequency
+sdtm_v <- sort(rowSums(sdtm_m),decreasing=TRUE)
+sdtm_d <- data.frame(word = names(sdtm_v),freq=sdtm_v)
+
+
+############## Keith Olbermann
+kdf <- read_csv(file = 'KeithOlbermann_tweets.csv')$Text
+
+kdf1 <- read.csv(file = "KeithOlbermann_tweets.csv")[,c(1,3)]
+
+# Load the data as a corpus
+ktext <- Corpus(VectorSource(kdf))
+
+################## Cleaning ##############################################
+# Replacing "/", "@" and "|" with space
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+ktext <- tm_map(ktext, toSpace, "/")
+ktext <- tm_map(ktext, toSpace, "@")
+ktext <- tm_map(ktext, toSpace, "\\|")
+ktext <- tm_map(ktext, toSpace, "-")
+ktext <- tm_map(ktext, toSpace, "'s")
+
+# Convert the text to lower case
+ktext <- tm_map(ktext, content_transformer(tolower))
+
+# Remove numbers
+ktext <- tm_map(ktext, removeNumbers)
+
+# Remove english common stopwords
+ktext <- tm_map(ktext, removeWords, stopwords("english"))
+
+# Remove punctuations
+ktext <- tm_map(ktext, removePunctuation)
+
+# Eliminate extra white spaces
+ktext <- tm_map(ktext, stripWhitespace)
+
+# Text stemming - which reduces words to their root form
+ktext <- tm_map(ktext, stemDocument)
+
+# specify your custom stopwords as a character vector
+ktext <- tm_map(ktext, removeWords, c("https", "tco"))
+
+######################### Analysis ########################################
+# Build a term-document matrix
+ktext_dtm <- TermDocumentMatrix(ktext)
+kdtm_m <- as.matrix(ktext_dtm)
+
+# Sort by descreasing value of frequency
+kdtm_v <- sort(rowSums(kdtm_m),decreasing=TRUE)
+kdtm_d <- data.frame(word = names(kdtm_v),freq=kdtm_v)
+
+```
+
+# Introduction
+
+- The US political atmosphere is hyperpolarized; the media is no exception (Abramowitz 2011; Jurkowitz et al. 2020; Levendusky 2009; Mason 2018)
+
+- The 2020 election was unique in a variety of ways
+
+- Social media continues to rise in popularity and change the way that political media is consumed (Owen 2019)
+
+### What does this paper hope to accomplish?
+
+---
+
+class: inverse, middle, center
+# Literature Review
+
+---
+# The Rise of Social Media in Politics
+
+- Political media and infotainment in the 1980s, and the Internet in the 1990s
+
+- Obama was the first to utilize social media in his 2008 campaign
+
+- All political advertisements and posts about politics are protected under the First Amendment, even if it is misinformation
+
+---
+# Partisan Bias and Its Relationship with Political Media in 2020
+
+### What is bias?
+- Bias is "a tendency to believe that some people, ideas, etc. are better than others, which often results in treating some people unfairly" (Cornell University Library)
+
+### What is confirmation bias?
+- Confirmation bias is "our subconscious tendency to seek and interpret information and other evidence in ways that affirms our existing beliefs" (Cornell University Library)
+
+### News Gathering vs. News Analysis
+- Fact reporting versus building a larger narrative out of facts
+
+---
+# Partisan Bias and Its Relationship with Political Media in 2020
+
+- Out of 30 news sources, Democrats tend to trust 22 of those sources, while Republicans tend to trust only 7 (Jurkowitz et al. 2020)
+
+- 65 percent of Republicans trust Fox News, and 67 percent of Democrats trust CNN, but CNN is one of multiple sources that Democrats claim to trust (Jurkowitz et al. 2020)
+
+- In a Gallup poll, "69 percent of respondents said they are more concerned about how media is affecting others" ("Most People..." 2020)
+
+---
+# Donald Trump: A Twitter Political Figurehead
+
+- Donald Trump's "rule by tweet" policy (Owen 2019)
+
+- Account was permanently disabled on January 8th, 2021 (Twitter Inc.)
+
+- 2019 analysis showed that Trump's most frequently used words on Twitter were "great", "president", "country", "people", "America", and "Obama" (Maksimava 2019)
+
+---
+# The Contributions of this Paper
+
+- Examine the role of traditional media outlets and commentators on Twitter during the height of the 2020 election (9/1/20-1/20/21)
+
+- Analyzing the tweets of CNN, Fox News, Reuters, Keith Olbermann, and Sean Hannity during this time period
+
+- Variety of analyses, including frequently used words, correlations among frequent words, emotions analysis, and sentiment analysis
+
+---
+
+class: inverse, middle, center
+# Methodology
+
+---
+# Choosing the Twitter Users
+
+- Use of the [Ad Fontes Media Bias Chart](https://www.adfontesmedia.com/interactive-media-bias-chart/) to initially examine three news sources
+
+- CNN bias score of -12.15, reliability score of 42.43, and Fox News bias score of 17.19, reliability score of 32.90
+
+- Introduction of Reuters as a neutral source, with a bias score of -7.37 and a reliability score of 51.27 (second best source when considering bias and reliability together - Pryor 2020)
+
+- Choice of political commentators (Hannity and Olbermann) was based on what two think tanks rated as some of their most hated/biased commentators
+
+---
+# Data Collection
+
+- Scraped tweets in Python using the snscrape package
+
+- Every tweet from this time period for each user was used in this analysis, whether or not it actually dealt with politics and/or the election
+
+- Tweet Sample Sizes by User
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+n_CNN <- 14595
+n_Fox <- 2765
+n_Reuters <- 61510
+n_Hannity <- 2961
+n_Olbermann <- 7875
+
+n_sum <- sum(n_CNN, n_Fox, n_Reuters, n_Hannity, n_Olbermann)
+
+sample <- matrix(c(n_CNN,n_Fox,n_Reuters,n_Hannity,n_Olbermann,n_sum),ncol = 6,byrow = TRUE)
+colnames(sample) <- c("CNN","Fox News","Reuters","Sean Hannity", "Keith Olbermann", "Total")
+rownames(sample) <- "User"
+sample <- as.table(sample)
+sample
+
+```
+
+---
+# Data Cleaning and Text Mining Analysis
+
+- Two copies of the data were loaded in, one for the frequently used words portion of the analysis, and the other for the emotions and sentiment analysis
+
+- For frequently used words, the data was loaded into a corpus and then cleaned
+
+- For the emotions analysis and sentiment, the tweets were not cleaned, and the emotion and sentiment scores were calculated
+
+---
+
+class: inverse, middle, center
+# Results and Analysis
+
+---
+# Frequently Used Words by User
+
+- Top 10 Most Frequent Words by User
+- Word Clouds
+
+---
+# CNN
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+barplot(dtm_d_CNN[1:10,]$freq, las = 2, names.arg = dtm_d_CNN[1:10,]$word,
+        col ="lightblue", main ="CNN Top 10 Most Frequent Words",
+        ylab = "Word Frequencies") 
+```
+
+---
+# Fox News
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+barplot(dtm_d[1:10,]$freq, las = 2, names.arg = dtm_d[1:10,]$word,
+        col ="lightblue", main ="Fox News Top 10 Most Frequent Words",
+        ylab = "Word Frequencies") 
+```
+
+---
+# Reuters
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+bar_plot_top_words(rdf)
+```
+
+---
+# Sean Hannity
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+barplot(sdtm_d[c(1,2,3,4,5,6,7,8,9,11),]$freq, las = 2, names.arg = sdtm_d[c(1,2,3,4,5,6,7,8,9,11),]$word,
+        col ="lightblue", main ="Sean Hannity's Top 10 Most Frequent Words",
+        ylab = "Word Frequencies") 
+```
+
+---
+# Keith Olbermann
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+barplot(kdtm_d[1:10,]$freq, las = 2, names.arg = kdtm_d[1:10,]$word,
+        col ="lightblue", main ="Keith Olbermann's Top 10 Most Frequent Words",
+        ylab = "Word Frequencies")
+```
+
+---
+# CNN
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+set.seed(1234)
+
+wordcloud(words = dtm_d_CNN$word, freq = dtm_d_CNN$freq, min.freq = 100,
+          scale = c(4,0.5), max.words=150, random.order=FALSE, rot.per=0.40, 
+          colors=brewer.pal(8, "Dark2"))
+```
+
+---
+# Fox News
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+set.seed(1234)
+
+wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 20,
+          scale = c(4,0.5), max.words=150, random.order=FALSE, rot.per=0.40, 
+          colors=brewer.pal(8, "Dark2"))
+```
+
+---
+# Reuters
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+set.seed(1234)
+
+word_cloud2(rdf)
+```
+
+---
+# Sean Hannity
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+set.seed(1234)
+
+wordcloud(words = sdtm_d$word, freq = sdtm_d$freq, min.freq = 20,
+          scale = c(4,0.5), max.words=150, random.order=FALSE, rot.per=0.40, 
+          colors=brewer.pal(8, "Dark2"))
+```
+
+---
+# Keith Olbermann
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+set.seed(1234)
+
+wordcloud(words = kdtm_d$word, freq = kdtm_d$freq, min.freq = 100,
+          scale = c(4,0.5), max.words=150, random.order=FALSE, rot.per=0.40, 
+          colors=brewer.pal(8, "Dark2"))
+```
+
+---
+# Frequent Words Correlation Analysis
+
+- For each user's top ten words, a correlation analysis was run, and the results show any other words, or root words, from their tweets that were correlated at or above the 0.25 level
+
+---
+# CNN
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+findAssocs(CNN_text_dtm, terms = c("presid","trump","covid",
+                                   "new","elect","year",
+                                   "biden","state"), corlimit = 0.25)
+```
+
+---
+# Fox News
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+findAssocs(text_dtm, terms = c("trump","biden","elect",
+                               "senat","vote","state"), 
+           corlimit = 0.25)
+```
+
+---
+# Reuters
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+findAssocs(rtext_dtm, terms = c('new',"coronavirus",
+                               "presid","trump"), 
+           corlimit = 0.25)
+```
+
+---
+# Sean Hannity
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+findAssocs(stext_dtm, terms = c("biden","covid","new"), 
+           corlimit = 0.25)
+```
+
+---
+# Keith Olbermann
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+findAssocs(ktext_dtm, terms = c("trump","new","video","coup","full",
+                               "just","will","biden","pleas","version"), 
+           corlimit = 0.25)
+```
+
+---
+# Emotions Analysis
+
+- The syuzhet package was used to classify meaningful words in a user's tweets as one of the eight main emotions: anger, anticipation, disgust, fear, joy, sadness, surprise, and trust using an NRC dictionary
+
+- For each user, a data frame was created to classify each of the words in each tweet with an emotion
+
+---
+# CNN
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+CNN_emotion <- get_nrc_sentiment(CNN_df)
+
+anger <- sum(CNN_emotion$anger)
+anticipation <- sum(CNN_emotion$anticipation)
+disgust <- sum(CNN_emotion$disgust)
+fear <- sum(CNN_emotion$fear)
+joy <- sum(CNN_emotion$joy)
+sadness <- sum(CNN_emotion$sadness)
+surprise <- sum(CNN_emotion$surprise)
+trust <- sum(CNN_emotion$trust)
+negative <- sum(CNN_emotion$negative)
+positive <- sum(CNN_emotion$positive)
+
+CNN_sum <- c(anger,anticipation,disgust,fear,joy,sadness,surprise,trust)
+Emotions <- c("Anger","Anticipation","Disgust","Fear","Joy","Sadness","Surprise","Trust")
+Emotions <- factor(Emotions)
+CNN_emotion_tibble <- tibble(CNN_sum)
+
+row.names(CNN_emotion_tibble) <- t(Emotions)
+
+CNN_emotion_tibble %>% 
+  ggplot() + geom_col(mapping = aes(x= reorder(Emotions,CNN_sum),
+                                    y=prop.table(CNN_sum),fill=Emotions)) +
+  ylab("Percentage of Meaningful Words") + xlab("Emotions") + 
+  ggtitle("CNN Twitter Account: Percentage of Meaningful Words by Emotion") + 
+  coord_flip()
+```
+
+---
+# Fox News
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+emotiondf <- get_nrc_sentiment(df)
+
+anger <- sum(emotiondf$anger)
+anticipation <- sum(emotiondf$anticipation)
+disgust <- sum(emotiondf$disgust)
+fear <- sum(emotiondf$fear)
+joy <- sum(emotiondf$joy)
+sadness <- sum(emotiondf$sadness)
+surprise <- sum(emotiondf$surprise)
+trust <- sum(emotiondf$trust)
+negative <- sum(emotiondf$negative)
+positive <- sum(emotiondf$positive)
+
+sum <- c(anger,anticipation,disgust,fear,joy,sadness,surprise,trust)
+Emotions <- c("Anger","Anticipation","Disgust","Fear","Joy","Sadness","Surprise","Trust")
+Emotions <- factor(Emotions)
+emotion_tibble <- tibble(sum)
+
+row.names(emotion_tibble) <- t(Emotions)
+
+emotion_tibble %>% 
+  ggplot() + geom_col(mapping = aes(x= reorder(Emotions,sum),
+                                    y=prop.table(sum),fill=Emotions)) +
+  ylab("Percentage of Meaningful Words") + xlab("Emotions") + 
+  ggtitle("Fox News Twitter Account: Percentage of Meaningful Words by Emotion") + 
+  coord_flip()
+```
+
+---
+# Reuters
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+remotiondf <- get_nrc_sentiment(rdf)
+
+ranger <- sum(remotiondf$anger)
+ranticipation <- sum(remotiondf$anticipation)
+rdisgust <- sum(remotiondf$disgust)
+rfear <- sum(remotiondf$fear)
+rjoy <- sum(remotiondf$joy)
+rsadness <- sum(remotiondf$sadness)
+rsurprise <- sum(remotiondf$surprise)
+rtrust <- sum(remotiondf$trust)
+rnegative <- sum(remotiondf$negative)
+rpositive <- sum(remotiondf$positive)
+
+rsum <- c(ranger,ranticipation,rdisgust,rfear,rjoy,rsadness,rsurprise,rtrust)
+remotion_tibble <- tibble(rsum)
+
+row.names(remotion_tibble) <- t(Emotions)
+
+remotion_tibble %>% 
+  ggplot() + geom_col(mapping = aes(x= reorder(Emotions,rsum),
+                                    y=prop.table(rsum),fill=Emotions)) +
+  ylab("Percentage of Meaningful Words") + xlab("Emotions") + 
+  ggtitle("Reuters Twitter Account: Percentage of Meaningful Words by Emotion") + 
+  coord_flip()
+
+```
+
+---
+# Sean Hannity
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+semotiondf <- get_nrc_sentiment(sdf)
+
+sanger <- sum(semotiondf$anger)
+santicipation <- sum(semotiondf$anticipation)
+sdisgust <- sum(semotiondf$disgust)
+sfear <- sum(semotiondf$fear)
+sjoy <- sum(semotiondf$joy)
+ssadness <- sum(semotiondf$sadness)
+ssurprise <- sum(semotiondf$surprise)
+strust <- sum(semotiondf$trust)
+snegative <- sum(semotiondf$negative)
+spositive <- sum(semotiondf$positive)
+
+ssum <- c(sanger,santicipation,sdisgust,sfear,sjoy,ssadness,ssurprise,strust)
+semotion_tibble <- tibble(ssum)
+
+row.names(semotion_tibble) <- t(Emotions)
+
+semotion_tibble %>% 
+  ggplot() + geom_col(mapping = aes(x= reorder(Emotions,ssum),
+                                    y=prop.table(ssum),fill=Emotions)) +
+  ylab("Percentage of Meaningful Words") + xlab("Emotions") + 
+  ggtitle("Sean Hannity's Twitter: Percentage of Meaningful Words by Emotion") + 
+  coord_flip()
+```
+
+---
+# Keith Olbermann
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+kemotiondf <- get_nrc_sentiment(kdf)
+
+kanger <- sum(kemotiondf$anger)
+kanticipation <- sum(kemotiondf$anticipation)
+kdisgust <- sum(kemotiondf$disgust)
+kfear <- sum(kemotiondf$fear)
+kjoy <- sum(kemotiondf$joy)
+ksadness <- sum(kemotiondf$sadness)
+ksurprise <- sum(kemotiondf$surprise)
+ktrust <- sum(kemotiondf$trust)
+knegative <- sum(kemotiondf$negative)
+kpositive <- sum(kemotiondf$positive)
+
+ksum <- c(kanger,kanticipation,kdisgust,kfear,kjoy,ksadness,ksurprise,ktrust)
+kemotion_tibble <- tibble(ksum)
+
+row.names(kemotion_tibble) <- t(Emotions)
+
+kemotion_tibble %>% 
+  ggplot() + geom_col(mapping = aes(x= reorder(Emotions,ksum),
+                                    y=prop.table(ksum),fill=Emotions)) +
+  ylab("Percentage of Meaningful Words") + xlab("Emotions") + 
+  ggtitle("Keith Olbermann's Twitter: Percentage of Meaningful Words by Emotion") + 
+  coord_flip()
+```
+
+---
+# Sentiment Analysis
+
+- Shiny Application Construction
+- ANOVA test and Tukey Multiple Comparisons
+
+---
+# Sentiment Analysis Shiny App
+
+- [Shiny Application](https://kaitlynfales421.shinyapps.io/Election2020_Twitter_Sentiment/)
+
+
+---
+# One-Way ANOVA Test
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+d <- read_csv('d.csv')
+
+d %>% 
+  group_by(Username) %>% 
+  summarise(avg_sentiment = mean(Sentiment))
+
+
+anova <- aov(Sentiment ~ Username, data = d)
+summary(anova)
+```
+
+---
+# Tukey Multiple Comparison
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+tukey <- TukeyHSD(anova)
+
+par(mar = c(5, 9, 5, 2))
+plot(tukey,las = 1,cex.axis = 0.70)
+```
+
+---
+
+class: inverse, middle, center
+# Conclusion
+
+---
+# Conclusion and Future Research
+
+- Because this was a visualization-based analysis, it is difficult to say that these differences are occurring because of partisan polarization
+
+- However, there are granular, word-for-word differences between the users, and partisanship is involved in that simply based on the users chosen in this study
+
+- This research sheds a light on the difference between fact reporting (news gathering) and news analysis
+
+- Many future research directions, including the study of more users, and adding in a misinformation analysis
+
+---
+
+class: inverse, middle, center
+# Thank You!
+
+
+
+
