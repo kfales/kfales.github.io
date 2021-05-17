@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Examining the Twitter Conversation Between CNN, Fox News, Reuters, Sean Hannity, and Keith Olbermann During the Height of the 2020 Election</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kaitlyn Fales" />
+    <meta name="date" content="2021-05-17" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+    <script src="libs/anchor-sections/anchor-sections.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Examining the Twitter Conversation Between CNN, Fox News, Reuters, Sean Hannity, and Keith Olbermann During the Height of the 2020 Election
+### Kaitlyn Fales
+### 17 May 2021
+
+---
+
+
+
+
+
+
+
+# Introduction
+
+- The US political atmosphere is hyperpolarized; the media is no exception (Abramowitz 2011; Jurkowitz et al. 2020; Levendusky 2009; Mason 2018)
+
+- The 2020 election was unique in a variety of ways
+
+- Social media continues to rise in popularity and change the way that political media is consumed (Owen 2019)
+
+### What does this paper hope to accomplish?
+
+---
+
+class: inverse, middle, center
+# Literature Review
+
+---
+# The Rise of Social Media in Politics
+
+- Political media and infotainment in the 1980s, and the Internet in the 1990s
+
+- Obama was the first to utilize social media in his 2008 campaign
+
+- All political advertisements and posts about politics are protected under the First Amendment, even if it is misinformation
+
+---
+# Partisan Bias and Its Relationship with Political Media in 2020
+
+### What is bias?
+- Bias is "a tendency to believe that some people, ideas, etc. are better than others, which often results in treating some people unfairly" (Cornell University Library)
+
+### What is confirmation bias?
+- Confirmation bias is "our subconscious tendency to seek and interpret information and other evidence in ways that affirms our existing beliefs" (Cornell University Library)
+
+### News Gathering vs. News Analysis
+- Fact reporting versus building a larger narrative out of facts
+
+---
+# Partisan Bias and Its Relationship with Political Media in 2020
+
+- Out of 30 news sources, Democrats tend to trust 22 of those sources, while Republicans tend to trust only 7 (Jurkowitz et al. 2020)
+
+- 65 percent of Republicans trust Fox News, and 67 percent of Democrats trust CNN, but CNN is one of multiple sources that Democrats claim to trust (Jurkowitz et al. 2020)
+
+- In a Gallup poll, "69 percent of respondents said they are more concerned about how media is affecting others" ("Most People..." 2020)
+
+---
+# Donald Trump: A Twitter Political Figurehead
+
+- Donald Trump's "rule by tweet" policy (Owen 2019)
+
+- Account was permanently disabled on January 8th, 2021 (Twitter Inc.)
+
+- 2019 analysis showed that Trump's most frequently used words on Twitter were "great", "president", "country", "people", "America", and "Obama" (Maksimava 2019)
+
+---
+# The Contributions of this Paper
+
+- Examine the role of traditional media outlets and commentators on Twitter during the height of the 2020 election (9/1/20-1/20/21)
+
+- Analyzing the tweets of CNN, Fox News, Reuters, Keith Olbermann, and Sean Hannity during this time period
+
+- Variety of analyses, including frequently used words, correlations among frequent words, emotions analysis, and sentiment analysis
+
+---
+
+class: inverse, middle, center
+# Methodology
+
+---
+# Choosing the Twitter Users
+
+- Use of the [Ad Fontes Media Bias Chart](https://www.adfontesmedia.com/interactive-media-bias-chart/) to initially examine three news sources
+
+- CNN bias score of -12.15, reliability score of 42.43, and Fox News bias score of 17.19, reliability score of 32.90
+
+- Introduction of Reuters as a neutral source, with a bias score of -7.37 and a reliability score of 51.27 (second best source when considering bias and reliability together - Pryor 2020)
+
+- Choice of political commentators (Hannity and Olbermann) was based on what two think tanks rated as some of their most hated/biased commentators
+
+---
+# Data Collection
+
+- Scraped tweets in Python using the snscrape package
+
+- Every tweet from this time period for each user was used in this analysis, whether or not it actually dealt with politics and/or the election
+
+- Tweet Sample Sizes by User
+
+
+```
+##        CNN Fox News Reuters Sean Hannity Keith Olbermann Total
+## User 14595     2765   61510         2961            7875 89706
+```
+
+---
+# Data Cleaning and Text Mining Analysis
+
+- Two copies of the data were loaded in, one for the frequently used words portion of the analysis, and the other for the emotions and sentiment analysis
+
+- For frequently used words, the data was loaded into a corpus and then cleaned
+
+- For the emotions analysis and sentiment, the tweets were not cleaned, and the emotion and sentiment scores were calculated
+
+---
+
+class: inverse, middle, center
+# Results and Analysis
+
+---
+# Frequently Used Words by User
+
+- Top 10 Most Frequent Words by User
+- Word Clouds
+
+---
+# CNN
+
+![](Presentation_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+---
+# Fox News
+
+![](Presentation_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+
+---
+# Reuters
+
+![](Presentation_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+
+---
+# Sean Hannity
+
+![](Presentation_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+
+---
+# Keith Olbermann
+
+![](Presentation_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+
+---
+# CNN
+
+![](Presentation_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+
+---
+# Fox News
+
+![](Presentation_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+
+---
+# Reuters
+
+![](Presentation_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+
+---
+# Sean Hannity
+
+![](Presentation_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+
+---
+# Keith Olbermann
+
+![](Presentation_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+
+---
+# Frequent Words Correlation Analysis
+
+- For each user's top ten words, a correlation analysis was run, and the results show any other words, or root words, from their tweets that were correlated at or above the 0.25 level
+
+---
+# CNN
+
+```
+## $presid
+##  joe vice 
+## 0.41 0.37 
+## 
+## $trump
+## donald 
+##   0.36 
+## 
+## $covid
+## vaccin 
+##   0.27 
+## 
+## $new
+##  york studi 
+##  0.39  0.25 
+## 
+## $elect
+##  joe 
+## 0.33 
+## 
+## $year
+##  old 
+## 0.41 
+## 
+## $biden
+##  joe 
+## 0.81 
+## 
+## $state
+## unit 
+## 0.33
+```
+
+---
+# Fox News
+
+```
+## $trump
+## presid 
+##   0.25 
+## 
+## $biden
+## hunter    joe 
+##   0.44   0.36 
+## 
+## $elect
+## result 
+##   0.28 
+## 
+## $senat
+##  runoff georgia 
+##    0.37    0.30 
+## 
+## $vote
+## count 
+##  0.28 
+## 
+## $state
+## battleground          key    secretari 
+##         0.36         0.26         0.26
+```
+
+---
+# Reuters
+
+```
+## $new
+## york 
+## 0.33 
+## 
+## $coronavirus
+## case 
+## 0.28 
+## 
+## $presid
+##    joe  biden  elect donald   vice 
+##   0.45   0.34   0.34   0.28   0.26 
+## 
+## $trump
+## donald    joe  biden 
+##   0.38   0.28   0.27
+```
+
+---
+# Sean Hannity
+
+```
+## $biden
+## hunter    joe 
+##   0.42   0.32 
+## 
+## $covid
+## relief 
+##   0.33 
+## 
+## $new
+## york 
+## 0.43
+```
+
+---
+# Keith Olbermann
+
+```
+## $trump
+## olbermann     minut     brief      must   analysi    youtub     covid 
+##      0.57      0.31      0.31      0.30      0.27      0.26      0.26 
+## 
+## $new
+## youtub   show  short  minut  covid 
+##   0.39   0.33   0.29   0.26   0.26 
+## 
+## $video
+##  youtub    show   minut   short analysi   worst   brief  trump’   debat 
+##    0.51    0.44    0.42    0.36    0.32    0.29    0.28    0.26    0.26 
+## 
+## $coup
+## attempt conspir    must    plot plotter 
+##    0.42    0.32    0.31    0.30    0.26 
+## 
+## $full
+##  youtub    show   minut   short   debat analysi  vanish   brief 
+##    0.60    0.53    0.43    0.39    0.33    0.32    0.30    0.26 
+## 
+## $just
+##       ran paraphras      movi  bullshit hvpypqdnd  knockout     debat    vanish 
+##      0.43      0.43      0.41      0.41      0.35      0.31      0.29      0.29 
+##    happen   network    hvpypp 
+##      0.28      0.26      0.26 
+## 
+## $will
+##   coup”   “hair    farc     dye cultist  appeas 
+##    0.31    0.31    0.30    0.30    0.28    0.27 
+## 
+## $biden
+## counsel   china    show “fraud” 
+##    0.30    0.27    0.26    0.26 
+## 
+## $pleas
+##          pledg tomjumbogrumbo            via          alert           seen 
+##           0.61           0.61           0.58           0.52           0.51 
+##          rescu           miss          found            nyc          pound 
+##           0.50           0.49           0.48           0.48           0.47 
+##           chip            cat            dog          avenu           kill 
+##           0.44           0.42           0.38           0.36           0.34 
+##         nycacc           love           site       thursday            die 
+##           0.33           0.33           0.31           0.31           0.29 
+##          train      manhattan            ’ve            can          scare 
+##           0.29           0.29           0.26           0.25           0.25 
+## 
+## $version
+##    short     show   youtub    minut    debat    worst     lose      ran 
+##     0.56     0.49     0.49     0.45     0.38     0.28     0.27     0.26 
+##    china knockout 
+##     0.26     0.26
+```
+
+---
+# Emotions Analysis
+
+- The syuzhet package was used to classify meaningful words in a user's tweets as one of the eight main emotions: anger, anticipation, disgust, fear, joy, sadness, surprise, and trust using an NRC dictionary
+
+- For each user, a data frame was created to classify each of the words in each tweet with an emotion
+
+---
+# CNN
+
+![](Presentation_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
+
+---
+# Fox News
+
+![](Presentation_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
+
+---
+# Reuters
+
+![](Presentation_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+
+---
+# Sean Hannity
+
+![](Presentation_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
+
+---
+# Keith Olbermann
+
+![](Presentation_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
+
+---
+# Sentiment Analysis
+
+- Shiny Application Construction
+- ANOVA test and Tukey Multiple Comparisons
+
+---
+# Sentiment Analysis Shiny App
+
+- [Shiny Application](https://kaitlynfales421.shinyapps.io/Election2020_Twitter_Sentiment/)
+
+
+---
+# One-Way ANOVA Test
+
+
+```
+## # A tibble: 5 x 2
+##   Username       avg_sentiment
+##   &lt;chr&gt;                  &lt;dbl&gt;
+## 1 CNN                   0.0490
+## 2 FoxNews              -0.152 
+## 3 KeithOlbermann       -0.403 
+## 4 Reuters               0.0345
+## 5 seanhannity          -0.231
+```
+
+```
+##                Df Sum Sq Mean Sq F value Pr(&gt;F)    
+## Username        4   1588   396.9   334.3 &lt;2e-16 ***
+## Residuals   89701 106495     1.2                   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+---
+# Tukey Multiple Comparison
+
+![](Presentation_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
+
+---
+
+class: inverse, middle, center
+# Conclusion
+
+---
+# Conclusion and Future Research
+
+- Because this was a visualization-based analysis, it is difficult to say that these differences are occurring because of partisan polarization
+
+- However, there are granular, word-for-word differences between the users, and partisanship is involved in that simply based on the users chosen in this study
+
+- This research sheds a light on the difference between fact reporting (news gathering) and news analysis
+
+- Many future research directions, including the study of more users, and adding in a misinformation analysis
+
+---
+
+class: inverse, middle, center
+# Thank You!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
