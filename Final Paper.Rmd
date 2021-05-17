@@ -692,13 +692,15 @@ This project has many possible future directions, with the most obvious being to
 
 # **References**
 
+Abramowitz, Alan I. 2011. The Disappearing Center: Engaged Citizens, Polarization, and American Democracy. New Haven, CT: Yale University Press.
+
 Beck, Martin. “MartinBeckUT/TwitterScraper.” GitHub, December 3, 2020. https://github.com/MartinBeckUT/TwitterScraper/blob/master/snscrape/cli-with-python/snscrape-python-cli.ipynb. 
 
 Benoit K, Watanabe K, Wang H, Nulty P, Obeng A, Müller S, Matsuo A (2018). “quanteda: An R package for the quantitative analysis of textual data.” _Journal of Open Source Software_, *3*(30), 774. doi: 10.21105/joss.00774 (URL: https://doi.org/10.21105/joss.00774), <URL: https://quanteda.io>.
 
 Bouchet-Valat, Milan (2020). SnowballC: Snowball Stemmers Based on the C 'libstemmer' UTF-8 Library. R package version 0.7.0. https://CRAN.R-project.org/package=SnowballC
 
-Winston Chang, Joe Cheng, JJ Allaire, Yihui Xie and Jonathan McPherson (2020). shiny: Web Application Framework for R. R package version 1.5.0. https://CRAN.R-project.org/package=shiny 
+Chang, Winston, Joe Cheng, JJ Allaire, Yihui Xie and Jonathan McPherson (2020). shiny: Web Application Framework for R. R package version 1.5.0. https://CRAN.R-project.org/package=shiny 
 
 “Fake News, Propaganda, and Disinformation: Learning to Critically Evaluate Media Sources: Seeing Our Biases.” Cornell University Library, 2021. https://guides.library.cornell.edu/evaluate_news/bias.  
 
@@ -708,7 +710,7 @@ Fellows, Ian (2018). wordcloud: Word Clouds. R package version 2.6. https://CRAN
 
 Fox, Lauren. “The Top 10 Most Hated News Commentators.” U.S. News & World Report. U.S. News & World Report, September 13, 2011. https://www.usnews.com/news/washington-whispers/slideshows/top-10-most-hated-news-commentators?slide=6.
 
-Garrett Grolemund, Hadley Wickham (2011). Dates and Times Made Easy with lubridate. Journal of Statistical Software, 40(3), 1-25. URL http://www.jstatsoft.org/v40/i03/.
+Grolemund, Garrett and Hadley Wickham (2011). Dates and Times Made Easy with lubridate. Journal of Statistical Software, 40(3), 1-25. URL http://www.jstatsoft.org/v40/i03/.
 
 "How Social Media Is Shaping Political Campaigns" Knowledge@Wharton, August 17, 2020, accessed May 15, 2021. https://knowledge.wharton.upenn.edu/article/how-social-media-is-shaping-political-campaigns/
 
@@ -722,6 +724,10 @@ Keating, Avril, and Gabriella Melis. “Social Media and Youth Political Engagem
 
 Kever, Jeannie. “Voters Rely on Mainstream Media Despite Concerns about Bias.” University of Houston, November 2, 2020. https://uh.edu/news-events/stories/2020/november-2020/11022020hobby-media-bias.php.  
 Maksimava, Masha. “Analyzing Trump's Twitter: Top Themes from 36K Tweets.” Awario Blog. Awario, February 10, 2019. https://awario.com/blog/trump-twitter-analysis/.
+
+Levendusky, Matthew. 2009. The Partisan Sort: How Liberals Became Democrats and Conservatives Became Republicans. Chicago: University of Chicago Press.
+
+Mason, Lilliana. 2018. Uncivil Agreement: How Politics Became Our Identity. Chicago: University of Chicago Press.
 
 “Media Bias Chart.” Ad Fontes Media. Accessed May 15, 2021. https://www.adfontesmedia.com/interactive-media-bias-chart/.
 
